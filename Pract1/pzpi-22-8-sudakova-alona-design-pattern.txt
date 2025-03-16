@@ -15,16 +15,53 @@
 
 Виконала:
 ст. гр. ПЗПІ-22-8
-Судакова А.Д.Перевірив:
+Судакова А.Д.
+Перевірив:
 ст. викл. кафедри ПІ
-Сокорчук І.П.
+Сокорчук І.П.
+
 
 
 
 
 Харків 2025
      Таблиця 1 – Історія змін
-№ДатаВерсіяОпис змінАвтор115.03.20250.1Створено розділ «Завдання»Альона Судакова215.03.20250.1Створено розділ «Опис виконаної роботи»Альона Судакова316.03.20250.1Створено розділ «Висновки»Альона Судакова416.03.20250.1Додано посилання на відеозапис та його хронологічний опис до додатку ААльона Судакова516.03.20250.1Додано слайди презентації до додатку БАльона Судакова616.03.20250.1Додано програмний код до додатку ВАльона Судакова     
+№
+Дата
+Версія
+Опис змін
+Автор
+1
+15.03.2025
+0.1
+Створено розділ «Завдання»
+Альона Судакова
+2
+15.03.2025
+0.1
+Створено розділ «Опис виконаної роботи»
+Альона Судакова
+3
+16.03.2025
+0.1
+Створено розділ «Висновки»
+Альона Судакова
+4
+16.03.2025
+0.1
+Додано посилання на відеозапис та його хронологічний опис до додатку А
+Альона Судакова
+5
+16.03.2025
+0.1
+Додано слайди презентації до додатку Б
+Альона Судакова
+6
+16.03.2025
+0.1
+Додано програмний код до додатку В
+Альона Судакова
+     
      1.1 Завдання
      Розібрати паттерн Observer (Спостерігач) та його застосування. Створити та оформити слайди презентації доповіді. Написати звіт згідно з вимогами.
      
@@ -147,188 +184,187 @@
      ДОДАТОК В
      Програмний код
      
-      1. /**
-      2.  * Інтерфейс Підписника визначає метод update, який викликається 
-      3.  * Видавцем при зміні його стану
-      4.  */
-      5. interface Observer {
-      6.     update(subject: Subject): void;
-      7. }
-      8. 
-      9. /**
-      10.  * Інтерфейс Видавця оголошує набір методів для керування підписниками
-      11.  */
-      12. interface Subject {
-      13.     // Приєднує підписника до видавця
-      14.     attach(observer: Observer): void;
-      15.     
-      16.     // Відʼєднує підписника від видавця
-      17.     detach(observer: Observer): void;
-      18.     
-      19.     // Оповіщає всіх підписників про подію
-      20.     notify(): void;
-      21. }
-      22. 
-      23. /**
-      24.  * Конкретний Видавець містить деякий важливий стан і оповіщає підписників,
-      25.  * коли цей стан змінюється
-      26.  */
-      27. class NewsPublisher implements Subject {
-      28.     // Список підписників. У реальному житті список підписників може зберігатися
-      29.     // в більш детальному вигляді (за типом події тощо)
-      30.     private observers: Observer[] = [];
-      31.     
-      32.     // Стан Видавця, що цікавить підписників
-      33.     private latestNews: string = "";
-      34. 
-      35.     /**
-      36.      * Приєднує нового підписника до списку
-      37.      */
-      38.     public attach(observer: Observer): void {
-      39.         const isExist = this.observers.includes(observer);
-      40.         if (isExist) {
-      41.             return console.log('Підписник вже приєднаний');
-      42.         }
-      43.         
-      44.         this.observers.push(observer);
-      45.         console.log('Підписник приєднаний');
-      46.     }
-      47. 
-      48.     /**
-      49.      * Відʼєднує підписника від списку
-      50.      */
-      51.     public detach(observer: Observer): void {
-      52.         const observerIndex = this.observers.indexOf(observer);
-      53.         
-      54.         if (observerIndex === -1) {
-      55.             return console.log('Такого підписника не існує');
-      56.         }
-      57.         
-      58.         this.observers.splice(observerIndex, 1);
-      59.         console.log('Підписник відʼєднаний');
-      60.     }
-      61. 
-      62.     /**
-      63.      * Оповіщає всіх підписників про зміну стану
-      64.      */
-      65.     public notify(): void {
-      66.         console.log('Оповіщення всіх підписників...');
-      67.         
-      68.         for (const observer of this.observers) {
-      69.             observer.update(this);
-      70.         }
-      71.     }
-      72. 
-      73.     /**
-      74.      * Зазвичай логіка Видавця є частиною бізнес-логіки програми.
-      75.      * У цьому прикладі видавець публікує нову новину, що змінює
-      76.      * його стан і запускає оповіщення
-      77.      */
-      78.     public publishNews(news: string): void {
-      79.         this.latestNews = news;
-      80.         console.log(`NewsPublisher: Опубліковано нову новину: ${news}`);
-      81.         this.notify();
-      82.     }
-      83. 
-      84.     /**
-      85.      * Метод, що дозволяє підписникам отримати поточний стан видавця
-      86.      */
-      87.     public getLatestNews(): string {
-      88.         return this.latestNews;
-      89.     }
-      90. }
-      91. 
-      92. /**
-      93.  * Конкретні Підписники реагують на оновлення, що випускає Видавець,
-      94.  * до якого вони були приєднані
-      95.  */
-      96. class EmailSubscriber implements Observer {
-      97.     private email: string;
-      98. 
-      99.     constructor(email: string) {
-      100.         this.email = email;
-      101.     }
-      102. 
-      103.     /**
-      104.      * Отримує оновлення від видавця
-      105.      */
-      106.     public update(subject: NewsPublisher): void {
-      107.         if (subject instanceof NewsPublisher) {
-      108.             console.log(`EmailSubscriber ${this.email}: Отримано нову новину: ${subject.getLatestNews()}`);
-      109.         }
-      110.     }
-      111. }
-      112. 
-      113. /**
-      114.  * Інший тип Конкретного Підписника, який реагує на оновлення по-своєму
-      115.  */
-      116. class MobileAppSubscriber implements Observer {
-      117.     private userId: string;
-      118. 
-      119.     constructor(userId: string) {
-      120.         this.userId = userId;
-      121.     }
-      122. 
-      123.     /**
-      124.      * Отримує оновлення від видавця і відправляє push-сповіщення
-      125.      */
-      126.     public update(subject: NewsPublisher): void {
-      127.         if (subject instanceof NewsPublisher) {
-      128.             console.log(`MobileAppSubscriber ${this.userId}: Надіслано push-сповіщення про новину: ${subject.getLatestNews()}`);
-      129.         }
-      130.     }
-      131. }
-      132. 
-      133. /**
-      134.  * Клієнтський код
-      135.  */
-      136. function demoObserverPattern(): void {
-      137.     // Створюємо видавця
-      138.     const publisher = new NewsPublisher();
-      139. 
-      140.     // Створюємо підписників
-      141.     const emailSubscriber1 = new EmailSubscriber("john@example.com");
-      142.     const emailSubscriber2 = new EmailSubscriber("jane@example.com");
-      143.     const mobileSubscriber = new MobileAppSubscriber("user_123");
-      144. 
-      145.     // Додаємо підписників до видавця
-      146.     publisher.attach(emailSubscriber1);
-      147.     publisher.attach(emailSubscriber2);
-      148.     publisher.attach(mobileSubscriber);
-      149. 
-      150.     // Публікуємо новину - всі підписники будуть оповіщені
-      151.     publisher.publishNews("Нова версія TypeScript 5.0 випущена!");
-      152. 
-      153.     console.log("\n");
-      154. 
-      155.     // Відключаємо одного підписника
-      156.     publisher.detach(emailSubscriber1);
-      157. 
-      158.     // Публікуємо ще одну новину - тільки активні підписники отримають оповіщення
-      159.     publisher.publishNews("Анонсовано нові функції в ECMAScript 2023");
-      160. }
-      161. 
-      162. // Запуск демонстрації
-      163. demoObserverPattern();
-      164. 
-      165. /**
-      166.  * Виведення в консоль:
-      167.  * 
-      168.  * Підписник приєднаний
-      169.  * Підписник приєднаний
-      170.  * Підписник приєднаний
-      171.  * NewsPublisher: Опубліковано нову новину: Нова версія TypeScript 5.0 випущена!
-      172.  * Оповіщення всіх підписників...
-      173.  * EmailSubscriber john@example.com: Отримано нову новину: Нова версія TypeScript 5.0 випущена!
-      174.  * EmailSubscriber jane@example.com: Отримано нову новину: Нова версія TypeScript 5.0 випущена!
-      175.  * MobileAppSubscriber user_123: Надіслано push-сповіщення про новину: Нова версія TypeScript 5.0 випущена!
-      176.  * 
-      177.  * Підписник відʼєднаний
-      178.  * NewsPublisher: Опубліковано нову новину: Анонсовано нові функції в ECMAScript 2023
-      179.  * Оповіщення всіх підписників...
-      180.  * EmailSubscriber jane@example.com: Отримано нову новину: Анонсовано нові функції в ECMAScript 2023
-      181.  * MobileAppSubscriber user_123: Надіслано push-сповіщення про новину: Анонсовано нові функції в ECMAScript 2023
-      182.  */
-2
+      1  /**
+2  * Інтерфейс Підписника визначає метод update, який викликається 
+3  * Видавцем при зміні його стану
+4  */
+5 interface Observer {
+6     update(subject: Subject): void;
+7 }
+8 
+9 /**
+10  * Інтерфейс Видавця оголошує набір методів для керування підписниками
+11  */
+12 interface Subject {
+13     // Приєднує підписника до видавця
+14     attach(observer: Observer): void;
+15     
+16     // Відʼєднує підписника від видавця
+17     detach(observer: Observer): void;
+18     
+19     // Оповіщає всіх підписників про подію
+20     notify(): void;
+21 }
+22 
+23 /**
+24  * Конкретний Видавець містить деякий важливий стан і оповіщає підписників,
+25  * коли цей стан змінюється
+26  */
+27 class NewsPublisher implements Subject {
+28     // Список підписників. У реальному житті список підписників може зберігатися
+29     // в більш детальному вигляді (за типом події тощо)
+30     private observers: Observer[] = [];
+31     
+32     // Стан Видавця, що цікавить підписників
+33     private latestNews: string = "";
+34 
+35     /**
+36      * Приєднує нового підписника до списку
+37      */
+38     public attach(observer: Observer): void {
+39         const isExist = this.observers.includes(observer);
+40         if (isExist) {
+41             return console.log('Підписник вже приєднаний');
+42         }
+43         
+44         this.observers.push(observer);
+45         console.log('Підписник приєднаний');
+46     }
+47 
+48     /**
+49      * Відʼєднує підписника від списку
+50      */
+51     public detach(observer: Observer): void {
+52         const observerIndex = this.observers.indexOf(observer);
+53         
+54         if (observerIndex === -1) {
+55             return console.log('Такого підписника не існує');
+56         }
+57         
+58         this.observers.splice(observerIndex, 1);
+59         console.log('Підписник відʼєднаний');
+60     }
+61 
+62     /**
+63      * Оповіщає всіх підписників про зміну стану
+64      */
+65     public notify(): void {
+66         console.log('Оповіщення всіх підписників...');
+67         
+68         for (const observer of this.observers) {
+69             observer.update(this);
+70         }
+71     }
+72 
+73     /**
+74      * Зазвичай логіка Видавця є частиною бізнес-логіки програми.
+75      * У цьому прикладі видавець публікує нову новину, що змінює
+76      * його стан і запускає оповіщення
+77      */
+78     public publishNews(news: string): void {
+79         this.latestNews = news;
+80         console.log(`NewsPublisher: Опубліковано нову новину: ${news}`);
+81         this.notify();
+82     }
+83 
+84     /**
+85      * Метод, що дозволяє підписникам отримати поточний стан видавця
+86      */
+87     public getLatestNews(): string {
+88         return this.latestNews;
+89     }
+90 }
+91 
+92 /**
+93  * Конкретні Підписники реагують на оновлення, що випускає Видавець,
+94  * до якого вони були приєднані
+95  */
+96 class EmailSubscriber implements Observer {
+97     private email: string;
+98 
+99     constructor(email: string) {
+100         this.email = email;
+101     }
+102 
+103     /**
+104      * Отримує оновлення від видавця
+105      */
+106     public update(subject: NewsPublisher): void {
+107         if (subject instanceof NewsPublisher) {
+108             console.log(`EmailSubscriber ${this.email}: Отримано нову новину: ${subject.getLatestNews()}`);
+109         }
+110     }
+111 }
+112 
+113 /**
+114  * Інший тип Конкретного Підписника, який реагує на оновлення по-своєму
+115  */
+116 class MobileAppSubscriber implements Observer {
+117     private userId: string;
+118 
+119     constructor(userId: string) {
+120         this.userId = userId;
+121     }
+122 
+123     /**
+124      * Отримує оновлення від видавця і відправляє push-сповіщення
+125      */
+126     public update(subject: NewsPublisher): void {
+127         if (subject instanceof NewsPublisher) {
+128             console.log(`MobileAppSubscriber ${this.userId}: Надіслано push-сповіщення про новину: ${subject.getLatestNews()}`);
+129         }
+130     }
+131 }
+132 
+133 /**
+134  * Клієнтський код
+135  */
+136 function demoObserverPattern(): void {
+137     // Створюємо видавця
+138     const publisher = new NewsPublisher();
+139 
+140     // Створюємо підписників
+141     const emailSubscriber1 = new EmailSubscriber("john@example.com");
+142     const emailSubscriber2 = new EmailSubscriber("jane@example.com");
+143     const mobileSubscriber = new MobileAppSubscriber("user_123");
+144 
+145     // Додаємо підписників до видавця
+146     publisher.attach(emailSubscriber1);
+147     publisher.attach(emailSubscriber2);
+148     publisher.attach(mobileSubscriber);
+149 
+150     // Публікуємо новину - всі підписники будуть оповіщені
+151     publisher.publishNews("Нова версія TypeScript 5.0 випущена!");
+152 
+153     console.log("\n");
+154 
+155     // Відключаємо одного підписника
+156     publisher.detach(emailSubscriber1);
+157 
+158     // Публікуємо ще одну новину - тільки активні підписники отримають оповіщення
+159     publisher.publishNews("Анонсовано нові функції в ECMAScript 2023");
+160 }
+161 
+162 // Запуск демонстрації
+163 demoObserverPattern();
+164 
+165 /**
+166  * Виведення в консоль:
+167  * 
+168  * Підписник приєднаний
+169  * Підписник приєднаний
+170  * Підписник приєднаний
+171  * NewsPublisher: Опубліковано нову новину: Нова версія TypeScript 5.0 випущена!
+172  * Оповіщення всіх підписників...
+173  * EmailSubscriber john@example.com: Отримано нову новину: Нова версія TypeScript 5.0 випущена!
+174  * EmailSubscriber jane@example.com: Отримано нову новину: Нова версія TypeScript 5.0 випущена!
+175  * MobileAppSubscriber user_123: Надіслано push-сповіщення про новину: Нова версія TypeScript 5.0 випущена!
+176  * 
+177  * Підписник відʼєднаний
+178  * NewsPublisher: Опубліковано нову новину: Анонсовано нові функції в ECMAScript 2023
+179  * Оповіщення всіх підписників...
+180  * EmailSubscriber jane@example.com: Отримано нову новину: Анонсовано нові функції в ECMAScript 2023
+181  * MobileAppSubscriber user_123: Надіслано push-сповіщення про новину: Анонсовано нові функції в ECMAScript 2023
+182  */
 
 
