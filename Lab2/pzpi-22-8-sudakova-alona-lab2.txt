@@ -1,0 +1,746 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+Катедра програмної інженерії
+
+
+
+
+ЗВІТ
+з лабораторної роботи № 2
+з дисципліни «Архітектура програмного забезпечення»
+на тему «Розширення серверної частини програмної системи»
+
+
+
+
+
+Виконала
+ст. гр. ПЗПІ-22-8
+Судакова Альона
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+Харків 2025
+     1 ІСТОРІЯ ЗМІН
+     
+     У цьому розділі представлено історію внесених змін до звіту, що наведено у табл. 1.
+     
+     Таблиця 1 – Історія змін
+№ДатаВерсія звітуОпис змін та виправлень109.05.20250.1Формування завдань для виконання до лабораторної роботи209.05.20250.1Опис виконаної роботи309.05.20250.1Формування результатів та висновків410.05.20250.1Формування додатків     
+
+
+     2 ЗАВДАННЯ
+     
+     Метою лабораторної роботи є розширення серверної частини існуючої програмної системи «FocusLearn» для оптимізації процесу неформальної освіти. Необхідно проаналізувати та описати існуючі компоненти системи, а також запропонувати та реалізувати розширення функціональності серверної частини.
+     Розширення серверної частини полягає у впровадженні інтернаціоналізації (i18n) для доступу програмної системи українською та англійською мовами.
+     Бізнес-логіка розширяється шляхом додавання функціональності для формування статистики активності користувача. Математичні формули стають більш комплексними та обширними. Наприклад, додається функціонал для передбачення продуктивності користувача на основі його діяльності у певний період.
+
+
+     3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+     У цьому розділі представлено аналіз існуючих компонентів серверної частини системи FocusLearn та запропоновано шляхи її розширення. Графічні матеріали (діаграми) наведено у дод. А.
+     Система FocusLearn реалізована на основі багаторівневої архітектури, яка забезпечує чітке розділення відповідальності між компонентами. Архітектура системи складається з наступних основних рівнів:
+     * рівень представлення - клієнтські додатки (веб-інтерфейс, мобільний додаток);
+     * рівень API - ASP.NET Core Web API, що забезпечує взаємодію між клієнтами та сервером;
+     * рівень бізнес-логіки - сервіси, що реалізують основні алгоритми та правила системи;
+     * рівень доступу до даних - Entity Framework Core для роботи з базою даних;
+     * рівень зберігання даних - SQL Server.
+     Архітектура серверної частини базується на патерні Repository, що дозволяє абстрагуватися від конкретної реалізації доступу до даних та спрощує процес тестування.
+     3.1 Компоненти серверної частини
+     Система реалізує RESTful API на базі ASP.NET Core, що забезпечує взаємодію з клієнтськими додатками. Основні контролери:
+     * AdminController - керування користувачами та адміністрування системи;
+     * AssignmentsController - керування навчальними завданнями;
+     * AuthController - автентифікація за допомогою зовнішніх провайдерів (Google, Facebook);
+     * BusinessLogicController - реалізація бізнес-логіки системи;
+     * ConcentrationMethodsController - керування методиками концентрації;
+     * IoTSessionController - взаємодія з IoT-пристроями;
+     * LearningMaterialsController - керування навчальними матеріалами;
+     * UserMethodStatisticsController - доступ до статистики використання методик;
+     * UsersController - керування користувачами системи.
+     Для взаємодії з базою даних використовується Entity Framework Core, який забезпечує об'єктно-реляційне відображення. Основні моделі даних включають:
+     * User - інформація про користувачів системи;
+     * Assignment - дані про навчальні завдання;
+     * ConcentrationMethod - методики концентрації уваги;
+     * IoTSession - сесії використання IoT-пристроїв;
+     * LearningMaterial - навчальні матеріали;
+     * UserMethodStatistics - статистика використання методик.
+     База даних розміщена на Microsoft SQL Server та містить взаємопов'язані таблиці для зберігання інформації про користувачів, їхню активність, навчальні матеріали та статистику. ER-модель бази даних показана на рис. Б.3 у дод. Б.
+     Система інтегрується з IoT-пристроями (смарт-браслети) за допомогою протоколу MQTT. MqttClientService є клієнтом для взаємодії з MQTT-брокером, що забезпечує підтримку надсилання команд на пристрої та отримання даних про навчальні сесії з IoT-пристроїв для подальшого аналізу.
+     Адміністративний функціонал програмної системи включає керування статусами користувачів (ChangeUserStatus), можливість створювати резервне копіювання бази даних (BackupDatabase), а також відновлювати бази даних (RestoreDatabase). Адміністратор може експортувати та імпортувати дані у форматі JSON (ExportData, ImportData). Код наведено у дод. В.
+     Безпека та автентифікація забезпечується завдяки використанню JWT-токенів для авторизації користувачів. Це дозволяє контролювати доступ до функцій системи за допомогою атрибутів [Authorize] та фільтрувати доступ на основі ролей та статусу користувачів. OAuth-автентифікація відбувається через Google та Facebook.
+     У реалізації серверної частини системи FocusLearn використано наступні технології та компоненти:
+     * ASP.NET Core - основний фреймворк для створення веб-додатків та API.
+     * Entity Framework Core - ORM для роботи з БД, що забезпечує об'єктно-реляційне відображення.
+     * Microsoft SQL Server - реляційна система управління базами даних.
+     * JWT  - механізм автентифікації та авторизації користувачів.
+     * OAuth 2.0 - протокол авторизації для зовнішніх провайдерів.
+     * Swagger/OpenAPI - інструмент для документування та тестування API.
+     * MQTTnet - клієнт для роботи з MQTT протоколом, використовується для зв'язку з IoT-пристроями.
+     * Microsoft.Extensions.Localization - бібліотека для реалізації інтернаціоналізації.
+     * Microsoft.AspNetCore.Localization - компоненти для керування локалізацією в ASP.NET Core.
+     * Newtonsoft.Json - бібліотека для серіалізації/десеріалізації JSON.
+     * AutoMapper - бібліотека для маппінгу між об'єктами різних типів.
+3.2  Бізнес-логіка системи
+     Бізнес-логіка системи FocusLearn базується на концепції оптимізації процесу навчання через керування концентрацією уваги. Основні компоненти бізнес-логіки складаються з керування методиками концентрації – система підтримує різні методики керування часом, такі як Помодоро та 90/30, які дозволяють чергувати періоди концентрації та відпочинку. Аналіз продуктивності відбувається за допомогою збору та аналізу даних про навчальні сесії для визначення ефективності різних методик концентрації.
+     3.3 Розширення серверної частини
+     3.3.1 Розширення бізнес-логіки
+     Основні компоненти бізнес-логіки реалізовані в класі BusinessLogicService, який імплементує інтерфейс IBusinessLogicService:
+      1 public interface IBusinessLogicService
+      2 {
+      3     Task<UserStatisticsDTO> CalculateUserStatisticsAsync(int userId, DateTime periodStartDate, string periodType);
+      4     Task<string> GetMostEffectiveMethodAsync(int userId, DateTime periodStartDate, string periodType);
+      5     Task UpdateMethodStatisticsAsync(int userId, int methodId, DateTime periodStartDate, string periodType);
+      6     Task<double> CalculateProductivityCoefficientAsync(int userId, DateTime periodStartDate, string periodType);
+      7     Task<ProductivityPredictionDTO> PredictProductivityImprovementAsync(int userId, DateTime periodStartDate, string periodType);
+      8     Task<ProductivityTrendDTO> AnalyzeProductivityTrendAsync(int userId, int daysToAnalyze);
+      9 }
+     Реалізація цього інтерфейсу містить логіку для обчислення статистики, визначення оптимальних методик, прогнозування продуктивності та аналізу трендів.
+     Для взаємодії з бізнес-логікою через API створено контролер BusinessLogicController, який надає доступ до функцій аналізу продуктивності.
+     Система FocusLearn використовує комплекс математичних методів для аналізу продуктивності користувачів, прогнозування їх ефективності та визначення оптимальних методик навчання. Основні методи включають:
+     * коефіцієнт продуктивності (KP) обчислюється за формулою:
+     KP = (KC * 0.4 + KBP * 0.3 + KVZ * 0.3) * 100
+     де:
+     • KC - коефіцієнт концентрації, залежить від загальної тривалості сесій концентрації в годинах;
+     • KBP - коефіцієнт балансу перерв, обчислюється як: 
+     KBP = 1 - (MP / (BP + MP))
+     де MP - кількість пропущених перерв, BP - кількість зроблених перерв;
+     • KVZ - коефіцієнт виконання завдань, обчислюється як: 
+     KVZ = VZ / ZZ
+     де VZ - кількість виконаних завдань, ZZ - загальна кількість завдань.
+     Результат нормалізується в межах від 0 до 100 для зручності інтерпретації.
+     * лінійна регресія для аналізу тренду продуктивності;
+     Для аналізу тренду продуктивності використовується метод лінійної регресії, де:
+     • Незалежна змінна (x) - порядковий номер дня у аналізованому періоді;
+     • Залежна змінна (y) - коефіцієнт продуктивності користувача за день.
+     Рівняння регресії має вигляд:
+     y = ax + b
+     Параметри a (нахил) і b (зсув) обчислюються за методом найменших квадратів:
+     a = (n*∑(xy) - ∑x*∑y) / (n*∑(x²) - (∑x)²)
+     b = (∑y - a*∑x) / n
+     де n - кількість днів у вибірці.
+     Додатково обчислюється коефіцієнт кореляції (r), що характеризує силу лінійного зв'язку:
+     r = (n*∑(xy) - ∑x*∑y) / √((n*∑(x²) - (∑x)²) * (n*∑(y²) - (∑y)²))
+     Значення нахилу (a) визначає тенденцію зміни продуктивності:
+     • a > 0 - продуктивність зростає з часом;
+     • a < 0 - продуктивність знижується з часом;
+     • a ≈ 0 - продуктивність стабільна.
+     * методи прогнозування покращення продуктивності;
+     Для прогнозування потенційного покращення продуктивності система виконує порівняльний аналіз поточних показників користувача з оптимальними значеннями, отриманими шляхом статистичного аналізу даних інших користувачів.
+     Обчислення потенційної продуктивності (PP) базується на формулі:
+     PP = CalculateProductivityCoefficient(
+         avg(OptimalCT),
+         avg(OptimalBC),
+         avg(OptimalMB),
+         CT,
+         TT
+     )
+     де:
+     • OptimalCT - середній час концентрації для найефективніших користувачів;
+     • OptimalBC - середня кількість перерв для найефективніших користувачів;
+     • OptimalMB - середня кількість пропущених перерв для найефективніших користувачів;
+     • CT - кількість виконаних завдань поточного користувача;
+     • TT - загальна кількість завдань поточного користувача.
+     Відсоток можливого покращення обчислюється як:
+     ImprovementPercentage = ((PP - CP) / CP) * 100
+     де CP - поточна продуктивність користувача.
+
+     3.3.2 Впровадження інтернаціоналізації
+     Для підтримки української та англійської мов пропонується реалізувати інтернаціоналізацію (i18n). Реалізація базуватиметься на стандартних механізмах локалізації ASP.NET Core з використанням ресурсних файлів (.resx) та системи IStringLocalizer.
+     У ході виконання лабораторної роботи створено базовий клас SharedResources з ключами. Впроваджено ресурсні файли для української (SharedResources.uk.resx) та англійської (SharedResources.en.resx) мов. Знімки екрану з прикладом вмісту файлів наведено у дод. Б. 
+     Розроблено LocalizationController для керування мовними налаштуваннями через API-ендпоїнти. Код контролеру наведено у дод. В.
+     У файлі Program.cs налаштовано підтримку локалізації:
+      1 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+      2 builder.Services.Configure<RequestLocalizationOptions>(options =>
+      3 {
+      4     var supportedCultures = new[] { new CultureInfo("uk"), new CultureInfo("en") };
+      5     options.DefaultRequestCulture = new RequestCulture("uk");
+      6     options.SupportedCultures = supportedCultures;
+      7     options.SupportedUICultures = supportedCultures;
+      8 });
+     Система підтримує два методи зміни мови – тимчасова зміна для поточного запиту через cookie (метод SetLanguage), або постійна зміна з записом у профіль користувача (метод ChangeUserLanguage). Фрагменти коду наведено у дод. В.
+     Конфігурація системи дозволяє автоматично визначати мову на основі параметра запиту в URL, значення у cookie, заголовка Accept-Language та налаштувань у профілі користувача (для авторизованих користувачів).
+     Реалізовано спеціалізований middleware UserLanguageMiddleware, який для авторизованих користувачів отримує налаштування мови з профілю та застосовує його до поточного запиту:
+      1 public async Task InvokeAsync(HttpContext context, IUserService userService)
+      2 {
+      3     if (context.User.Identity.IsAuthenticated)
+      4     {
+      5         var userIdClaim = /* отримання ідентифікатора користувача */;
+      6         if (userIdClaim != null)
+      7         {
+      8             var userId = int.Parse(userIdClaim.Value);
+      9             var user = await userService.GetUserByIdAsync(userId);
+      10             if (user != null && !string.IsNullOrEmpty(user.Language))
+      11             {
+      12                 var requestCulture = new RequestCulture(user.Language);
+      13                 context.Features.Set<IRequestCultureFeature>(
+      14                     new RequestCultureFeature(requestCulture, null)
+      15                 );
+      16                 CultureInfo.CurrentCulture = new CultureInfo(user.Language);
+      17                 CultureInfo.CurrentUICulture = new CultureInfo(user.Language);
+      18             }
+      19         }
+      20     }
+      21     await _next(context);
+      22 }
+     Реалізовано API-ендпоїнти для керування мовою:
+     * GET /api/Localization/set-language?culture=uk - тимчасова зміна мови через cookie;
+     * POST /api/Localization/change-user-language?language=uk - зміна мови в профілі користувача.
+Решту специфікації наведено у дод. Г.
+     Реалізовано фільтр LocalizationFilter для уніфікованого форматування відповідей з урахуванням локалізації:
+      1 public void OnActionExecuted(ActionExecutedContext context)
+      2 {
+      3     if (context.Result is ObjectResult objectResult)
+      4     {
+      5         var localizedResponse = new LocalizedResponseDTO<object>
+      6         {
+      7             Data = objectResult.Value,
+      8             Success = objectResult.StatusCode >= 200 && objectResult.StatusCode < 300,
+      9             Language = CultureInfo.CurrentCulture.Name,
+      10             Message = null
+      11         };
+      12         objectResult.Value = localizedResponse;
+      13     }
+      14 }
+
+     
+     
+
+
+4 ВИСНОВКИ
+     
+     В результаті виконання лабораторної роботи було розширено серверну частину програмної системи FocusLearn. Впроваджено підтримку інтернаціоналізації, що забезпечує доступність системи українською та англійською мовами. Реалізовано гнучкі механізми визначення мови користувача, включаючи можливість зберігання мовних налаштувань у профілі користувача.
+     Розширено бізнес-логіку системи шляхом впровадження комплексних алгоритмів аналізу продуктивності навчання. Реалізовано методи розрахунку коефіцієнта продуктивності, визначення найефективніших методик концентрації, прогнозування покращення продуктивності та аналізу трендів. Застосовано математичні методи, включаючи лінійну регресію та статистичний аналіз, для обробки даних користувача.
+     Результати тестування підтвердили коректність роботи реалізованих компонентів та відповідність функціональним вимогам. 
+     Подальший розвиток системи може включати впровадження додаткових мов, розширення набору аналітичних функцій та вдосконалення алгоритмів прогнозування продуктивності на основі методів машинного навчання.
+     Розроблені рішення підвищують цінність системи FocusLearn як інструмента оптимізації процесу неформальної освіти, надаючи користувачам детальну аналітику та рекомендації для підвищення ефективності навчання.
+     
+
+     ДОДАТОК А
+     Відеозапис
+     
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/BISydOtodS8.
+     Хронологічний опис відеозапису:
+     00:00 - Вступ до демонстрації. Окреслення основних завдань: впровадження інтернаціоналізації та розширення бізнес-логіки.
+     00:36 - Огляд структури проекту в Visual Studio. Демонстрація багаторівневої архітектури системи. Пояснення загальної організації коду та принципів розподілу відповідальності.
+     01:14 - Показ реалізації інтернаціоналізації. Демонстрація ресурсних файлів (.resx) для української та англійської мов. 
+     01:41 - Показ конфігурації локалізації в файлі Program.cs. Пояснення налаштування підтримуваних культур, механізмів визначення мови через URL, cookie та заголовки. 
+     02:05 - Огляд реалізації UserLanguageMiddleware, що відповідає за застосування мовних налаштувань з профілю користувача. 
+     02:35 - Практична демонстрація роботи інтернаціоналізації через Swagger. Виконання запитів до API для зміни мови та відображення змін у відповідях системи. 
+     03:31 - Огляд розширеної бізнес-логіки системи. Демонстрація інтерфейсу IBusinessLogicService та його методів для аналізу продуктивності користувачів. Пояснення основних функцій.
+     04:01 - Розбір математичних формул та алгоритмів, реалізованих у бізнес-логіці. 
+     04:41 - Виконання запитів для отримання статистики користувача, коефіцієнта продуктивності, найефективнішої методики, прогнозу покращення та аналізу тренду продуктивності. 
+     06:18 - Демонстрація інтеграції з системою локалізації для відображення повідомлень відповідною мовою.
+     07:08 - Підведення підсумків роботи.
+     
+     
+
+
+     ДОДАТОК Б
+     Графічні матеріали
+     
+      
+     Рисунок Б.1 – UML діаграма розгортання
+     
+      
+     Рисунок Б.2 – UML діаграма прецедентів
+     
+      
+     Рисунок Б.3 – ER-модель даних
+     
+     Рисунок Б.4 – UML діаграма діяльності для серверної частини
+     
+     
+     Рисунок Б.5 – Приклад вмісту файлу локалізації для англійської мови
+     
+     
+     Рисунок Б.6 – Приклад вмісту файлу локалізації для української мови
+     
+
+
+     ДОДАТОК В
+     Програмний код
+     
+     В.1 Математична обробка прикладних даних
+     GitHub репозиторій: https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab2/pzpi-22-8-sudakova-alona-lab2/Repositories/Implementation/BusinessLogicService.cs
+      1 /// <summary>
+      2 /// Розрахунок коефіцієнта продуктивності
+      3 /// </summary>
+      4 private double CalculateProductivityCoefficient(
+      5     int totalConcentrationTime,
+      6     int breakCount,
+      7     int missedBreaks,
+      8     int completedTasks,
+      9     int totalTasks)
+      10 {
+      11     // Коефіцієнт концентрації (час концентрації в годинах)
+      12     double concentrationCoefficient = totalConcentrationTime / 60.0;
+      13 
+      14     // Коефіцієнт балансу перерв (чим менше пропущених перерв, тим краще)
+      15     double breakBalanceCoefficient = breakCount > 0
+      16         ? 1.0 - (missedBreaks / (double)(breakCount + missedBreaks))
+      17         : 0;
+      18 
+      19     // Коефіцієнт виконання завдань
+      20     double taskCompletionCoefficient = totalTasks > 0
+      21         ? completedTasks / (double)totalTasks
+      22         : 0;
+      23 
+      24     // Загальний коефіцієнт продуктивності (шкала 0-100)
+      25     double productivityCoefficient = (
+      26         concentrationCoefficient * 0.4 +
+      27         breakBalanceCoefficient * 0.3 +
+      28         taskCompletionCoefficient * 0.3
+      29     ) * 100;
+      30 
+      31     // Обмеження результату від 0 до 100
+      32     return Math.Min(100, Math.Max(0, productivityCoefficient));
+      33 }
+      34 
+      35 /// <summary>
+      36 /// Аналіз тренду продуктивності
+      37 /// </summary>
+      38 public async Task<ProductivityTrendDTO> AnalyzeProductivityTrendAsync(int userId, int daysToAnalyze)
+      39 {
+      40     var endDate = DateTime.UtcNow;
+      41     var startDate = endDate.AddDays(-daysToAnalyze);
+      42 
+      43     // Отримати сесії концентрації за вказаний період
+      44     var sessions = await _context.IoTSessions
+      45         .Where(s => s.UserId == userId &&
+      46                    s.StartTime >= startDate &&
+      47                    s.SessionType == "Concentration")
+      48         .OrderBy(s => s.StartTime)
+      49         .ToListAsync();
+      50 
+      51     if (sessions.Count < 2)
+      52     {
+      53         return new ProductivityTrendDTO
+      54         {
+      55             Slope = 0,
+      56             Intercept = 0,
+      57             IsPositive = false,
+      58             CorrelationCoefficient = 0,
+      59             DailyData = new List<DailyProductivityDTO>()
+      60         };
+      61     }
+      62 
+      63     // Групування сесій за днями
+      64     var dailySessions = sessions
+      65         .GroupBy(s => s.StartTime.Date)
+      66         .OrderBy(g => g.Key)
+      67         .ToList();
+      68 
+      69     // Підготовка даних для лінійної регресії
+      70     var xValues = new List<double>(); // Дні від початку
+      71     var yValues = new List<double>(); // Продуктивність у відповідний день
+      72     var dailyData = new List<DailyProductivityDTO>();
+      73 
+      74     var firstDay = dailySessions.First().Key;
+      75 
+      76     foreach (var day in dailySessions)
+      77     {
+      78         var dayIndex = (day.Key - firstDay).Days;
+      79         var daySessions = day.ToList();
+      80 
+      81         // Отримати завдання за день
+      82         var dailyAssignments = await _context.Assignments
+      83             .Where(a => a.StudentId == userId &&
+      84                       a.CreatedAt.HasValue &&
+      85                       a.CreatedAt.Value.Date == day.Key.Date)
+      86             .ToListAsync();
+      87 
+      88         int completedTasks = dailyAssignments.Count(a => a.Status == "Completed");
+      89         int totalTasks = dailyAssignments.Count;
+      90 
+      91         // Розрахувати продуктивність за день
+      92         int totalConcentrationTime = daySessions.Sum(s => s.Duration ?? 0);
+      93         int breakCount = await _context.IoTSessions
+      94             .CountAsync(s => s.UserId == userId &&
+      95                             s.StartTime.Date == day.Key.Date &&
+      96                             s.SessionType == "Break");
+      97 
+      98         int missedBreaks = CalculateMissedBreaks(daySessions, breakCount);
+      99 
+      100         double dailyProductivity = CalculateProductivityCoefficient(
+      101             totalConcentrationTime,
+      102             breakCount,
+      103             missedBreaks,
+      104             completedTasks,
+      105             totalTasks
+      106         );
+      107 
+      108         xValues.Add(dayIndex);
+      109         yValues.Add(dailyProductivity);
+      110 
+      111         dailyData.Add(new DailyProductivityDTO
+      112         {
+      113             Date = day.Key,
+      114             Productivity = dailyProductivity
+      115         });
+      116     }
+      117 
+      118     // Обчислення лінійної регресії
+      119     double n = xValues.Count;
+      120     double sumX = xValues.Sum();
+      121     double sumY = yValues.Sum();
+      122     double sumXY = 0;
+      123     double sumX2 = 0;
+      124 
+      125     for (int i = 0; i < n; i++)
+      126     {
+      127         sumXY += xValues[i] * yValues[i];
+      128         sumX2 += xValues[i] * xValues[i];
+      129     }
+      130 
+      131     // Обчислення нахилу (slope) та перетину (intercept)
+      132     double slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+      133     double intercept = (sumY - slope * sumX) / n;
+      134 
+      135     // Обчислення коефіцієнта кореляції
+      136     double sumY2 = yValues.Sum(y => y * y);
+      137     double numerator = n * sumXY - sumX * sumY;
+      138     double denominator = Math.Sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+      139     double correlation = denominator != 0 ? numerator / denominator : 0;
+      140 
+      141     return new ProductivityTrendDTO
+      142     {
+      143         Slope = Math.Round(slope, 4),
+      144         Intercept = Math.Round(intercept, 2),
+      145         IsPositive = slope > 0,
+      146         CorrelationCoefficient = Math.Round(correlation, 4),
+      147         DailyData = dailyData
+      148     };
+      149 }
+      150 
+      151 /// <summary>
+      152 /// Прогнозування покращення продуктивності
+      153 /// </summary>
+      154 public async Task<ProductivityPredictionDTO> PredictProductivityImprovementAsync(
+      155     int userId,
+      156     DateTime periodStartDate,
+      157     string periodType)
+      158 {
+      159     // Отримати поточний коефіцієнт продуктивності
+      160     double currentProductivity = await CalculateProductivityCoefficientAsync(
+      161         userId,
+      162         periodStartDate,
+      163         periodType);
+      164 
+      165     // Знайти найефективнішу методику для користувачів
+      166     var optimalMethod = await _context.UserMethodStatistics
+      167         .Where(s => s.UserId != userId && s.PeriodType == periodType)
+      168         .GroupBy(s => s.MethodId)
+      169         .Select(g => new {
+      170             MethodId = g.Key,
+      171             AvgConcentrationTime = g.Average(s => s.TotalConcentrationTime),
+      172             AvgBreakCount = g.Average(s => s.BreakCount),
+      173             AvgMissedBreaks = g.Average(s => s.MissedBreaks)
+      174         })
+      175         .OrderByDescending(x => x.AvgConcentrationTime)
+      176         .FirstOrDefaultAsync();
+      177 
+      178     // Отримати інформацію про виконані завдання
+      179     var assignments = await _context.Assignments
+      180         .Where(a => a.StudentId == userId)
+      181         .ToListAsync();
+      182 
+      183     int completedTasks = assignments.Count(a => a.Status == "Completed");
+      184     int totalTasks = assignments.Count;
+      185 
+      186     double potentialProductivity = currentProductivity;
+      187 
+      188     // Якщо є оптимальна методика, розрахувати потенційну продуктивність
+      189     if (optimalMethod != null)
+      190     {
+      191         potentialProductivity = CalculateProductivityCoefficient(
+      192             (int)optimalMethod.AvgConcentrationTime,
+      193             (int)optimalMethod.AvgBreakCount,
+      194             (int)optimalMethod.AvgMissedBreaks,
+      195             completedTasks,
+      196             totalTasks
+      197         );
+      198     }
+      199     else
+      200     {
+      201         // Базове покращення на 20%
+      202         potentialProductivity = Math.Min(100, currentProductivity * 1.2);
+      203     }
+      204 
+      205     // Розрахунок відсотка покращення
+      206     double improvementPercentage = currentProductivity > 0
+      207         ? ((potentialProductivity - currentProductivity) / currentProductivity) * 100
+      208         : 0;
+      209 
+      210     // Генерація рекомендацій
+      211     var recommendations = GenerateRecommendations(userId);
+      212 
+      213     return new ProductivityPredictionDTO
+      214     {
+      215         CurrentProductivity = Math.Round(currentProductivity, 2),
+      216         PotentialProductivity = Math.Round(potentialProductivity, 2),
+      217         ImprovementPercentage = Math.Round(improvementPercentage, 2),
+      218         Recommendations = recommendations
+      219     };
+      220 }
+
+
+     В.2 Адміністрування бізнес-логіки системи
+     GitHub репозиторій: https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab2/pzpi-22-8-sudakova-alona-lab2/Controllers/AdminController.cs
+      1 using FocusLearn.Repositories.Abstract;
+      2 using Microsoft.AspNetCore.Authorization;
+      3 using Microsoft.AspNetCore.Http;
+      4 using Microsoft.AspNetCore.Mvc;
+      5 
+      6 namespace FocusLearn.Controllers
+      7 {
+      8     [Route("api/[controller]")]
+      9     [ApiController]
+      10     public class AdminController : ControllerBase
+      11     {
+      12         private readonly IAdminService _service;
+      13 
+      14         public AdminController(IAdminService adminService)
+      15         {
+      16             _service = adminService;
+      17         }
+      18         /// <summary>
+      19         /// Змінити статус користувача
+      20         /// </summary>
+      21         [HttpPost("change-user-status")]
+      22         [Authorize(Roles = "Admin")]
+      23         public async Task<IActionResult> ChangeUserStatus([FromQuery] int userId, [FromQuery] string status)
+      24         {
+      25             if (status != "Active" && status != "Inactive")
+      26                 return BadRequest("Invalid status. Allowed values are 'Active' and 'Inactive'.");
+      27 
+      28             var result = await _service.ChangeUserStatusAsync(userId, status);
+      29             if (!result)
+      30                 return NotFound("User not found.");
+      31 
+      32             return Ok($"User status changed to {status}.");
+      33         }
+      34         /// <summary>
+      35         /// Експорт схеми БД та даних
+      36         /// </summary>
+      37         /// <returns></returns>
+      38         [HttpPost("backup-database")]
+      39         public async Task<IActionResult> ExportDatabase()
+      40         {
+      41             try
+      42             {
+      43                 var exportFilePath = await _service.BackupDatabaseAsync();
+      44                 return Ok(new { Message = "Експорт бази даних успішний", FilePath = exportFilePath });
+      45             }
+      46             catch (Exception ex)
+      47             {
+      48                 return StatusCode(500, new { Message = "Помилка експорту бази даних", Details = ex.Message });
+      49             }
+      50         }
+      51         /// <summary>
+      52         /// Відновлення БД
+      53         /// </summary>
+      54         /// <param name="customPath"></param>
+      55         /// <returns></returns>
+      56         [HttpPost("restore-database")]
+      57         public async Task<IActionResult> RestoreDatabase([FromQuery] string customPath = null)
+      58         {
+      59             try
+      60             {
+      61                 var success = await _service.RestoreDatabaseAsync(customPath);
+      62                 if (success)
+      63                     return Ok("База даних успішно відновлена.");
+      64                 else
+      65                     return StatusCode(500, "Не вдалося відновити базу даних.");
+      66             }
+      67             catch (Exception ex)
+      68             {
+      69                 return StatusCode(500, new { Message = "Помилка відновлення бази даних.", Details = ex.Message });
+      70             }
+      71         }
+      72         /// <summary>
+      73         /// Експорт даних у форматі JSON
+      74         /// </summary>
+      75         [HttpPost("export-data")]
+      76         [Authorize(Roles = "Admin")]
+      77         public async Task<IActionResult> ExportData([FromBody] List<string> tableNames)
+      78         {
+      79             try
+      80             {
+      81                 // Викликаємо метод сервісу для експорту даних
+      82                 var exportedFilePaths = await _service.ExportDataAsync(tableNames);
+      83 
+      84                 // Формуємо відповідь із шляхами до файлів
+      85                 return Ok(new
+      86                 {
+      87                     Message = "Data exported successfully.",
+      88                     ExportedFiles = exportedFilePaths
+      89                 });
+      90             }
+      91             catch (ArgumentException ex)
+      92             {
+      93                 return BadRequest(new { Message = ex.Message });
+      94             }
+      95             catch (Exception ex)
+      96             {
+      97                 return StatusCode(500, new { Message = "An error occurred while exporting data.", Details = ex.Message });
+      98             }
+      99         }
+      100         /// <summary>
+      101         /// Імпорт даних користувачів
+      102         /// </summary>
+      103         [HttpPost("import-data")]
+      104         [Authorize(Roles = "Admin")]
+      105         public async Task<IActionResult> ImportData([FromQuery] string tableName, IFormFile file)
+      106         {
+      107             if (string.IsNullOrWhiteSpace(tableName))
+      108                 return BadRequest(new { Message = "You need to enter a table name." });
+      109 
+      110             if (file == null || file.Length == 0)
+      111                 return BadRequest(new { Message = "File was not upload or is empty." });
+      112 
+      113             try
+      114             {
+      115                 var result = await _service.ImportDataAsync(tableName, file);
+      116                 return Ok(new { Message = result });
+      117             }
+      118             catch (Exception ex)
+      119             {
+      120                 return StatusCode(500, new { Message = "An error occurred.", Details = ex.Message });
+      121             }
+      122         }
+      123     }
+      124 }
+
+     В.3 Контролер LocalizationController
+     GitHub репозиторій: https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab2/pzpi-22-8-sudakova-alona-lab2/Controllers/LocalizationController.cs
+      1 using FocusLearn.Models.DTO;
+      2 using FocusLearn.Repositories.Abstract;
+      3 using FocusLearn.Resources;
+      4 using Microsoft.AspNetCore.Localization;
+      5 using Microsoft.AspNetCore.Mvc;
+      6 using Microsoft.Extensions.Localization;
+      7 using System.Security.Claims;
+      8 
+      9 namespace FocusLearn.Controllers
+      10 {
+      11     [Route("api/[controller]")]
+      12     [ApiController]
+      13     public class LocalizationController : Controller
+      14     {
+      15         private readonly IStringLocalizer<SharedResources> _localizer;
+      16         private readonly IUserService _userService;
+      17 
+      18         public LocalizationController(
+      19             IStringLocalizer<SharedResources> localizer,
+      20             IUserService userService)
+      21         {
+      22             _localizer = localizer;
+      23             _userService = userService;
+      24         }
+      25 
+      26         /// <summary>
+      27         /// Змінити мову для поточного запиту та зберегти в cookie
+      28         /// </summary>
+      29         [HttpGet("set-language")]
+      30         public IActionResult SetLanguage([FromQuery] string culture)
+      31         {
+      32             if (string.IsNullOrWhiteSpace(culture))
+      33             {
+      34                 return BadRequest("Culture parameter is required");
+      35             }
+      36 
+      37             // Встановлюємо cookie з бажаною культурою
+      38             Response.Cookies.Append(
+      39                 CookieRequestCultureProvider.DefaultCookieName,
+      40                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+      41                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+      42             );
+      43 
+      44             return Ok(new { Message = _localizer["LanguageChanged", culture] });
+      45         }
+      46 
+      47         /// <summary>
+      48         /// Змінити мову для користувача (зберігається в профілі)
+      49         /// </summary>
+      50         [HttpPost("change-user-language")]
+      51         public async Task<IActionResult> ChangeUserLanguage([FromQuery] string language)
+      52         {
+      53             if (string.IsNullOrWhiteSpace(language))
+      54             {
+      55                 return BadRequest("Language parameter is required");
+      56             }
+      57 
+      58             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
+      59                   User.FindFirst("sub") ??
+      60                   User.FindFirst("UserId");
+      61 
+      62             if (userIdClaim == null)
+      63             {
+      64                 return Unauthorized("User ID not found in token");
+      65             }
+      66 
+      67             var userId = int.Parse(userIdClaim.Value);
+      68 
+      69             var updateProfileDto = new UpdateProfileDTO { Language = language };
+      70             var result = await _userService.UpdateUserAsync(userId, updateProfileDto);
+      71 
+      72             if (!result)
+      73                 return NotFound(_localizer["UserNotFound"]);
+      74 
+      75             Response.Cookies.Append(
+      76                 CookieRequestCultureProvider.DefaultCookieName,
+      77                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(language)),
+      78                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+      79             );
+      80 
+      81             return Ok(new { Message = _localizer["LanguageChanged", language] });
+      82         }
+      83     }
+      84 }
+
+
+     ДОДАТОК Г
+Специфікація розробленого REST API
+
+Таблиця Г.1 – Маршрут /api/Auth/
+ПосиланняМетодПараметриОписlogin-googleGETreturnUrlАвторизація за допомогою Google акаунтуgoogle-responseGETreturnUrlПеренаправлення login-facebookGETreturnUrlАвторизація за допомогою Facebook акаунтуfacebook-responseGETreturnUrlПеренаправлення
+Таблиця Г.2 – Маршрут /api/Users/
+ПосиланняМетодПараметриОписmy-profileGETBearer Token, userIdОтримання інформації про особистий акаунтmy-profilePUTBearer Token, userIdРедагування особистого профілюmy-profileDELETEBearer Token, userIdВидалення особистого профілю{id}GETBearer Token, userIdОтримання запису користувача за його ідентифікатором
+
+
+Продовження табл. Г.2
+ПосиланняМетодПараметриОписGETBearer TokenОтримання записів всіх користувачів (доступно лише 
+для адміністраторів)GETBearer TokenОтримання записів всіх репетиторів (для зручності студентів)
+Таблиця Г.3 – Маршрут /api/Assignments/
+ПосиланняМетодПараметриОписGETBearer TokenОтримання записів всіх завдань (доступно тільки для адміністраторів)POSTBearer TokenДодавання завдання (доступно для адміністраторів та репетиторів)my-assignmentsGETBearer TokenОтримання всіх завдань поточного користувача{id}GETBearer Token, assignmentIdОтримання запису завдання за його ідентифікатором{id}PUTBearer Token, assignmentIdРедагування запису завдання{id}DELETEBearer Token, assignmentIdВидалення запису завдання     
+     
+     Таблиця Г.4 – Маршрут /api/ConcentrationMethods/
+ПосиланняМетодПараметриОписGETBearer TokenОтримання записів всіх методів концентраціїPOSTBearer TokenДодавання методики концентрації (доступно тільки для адміністраторів){id}GETBearer Token, methodIdОтримання запису методики концентрації за його ідентифікатором{id}PUTBearer Token, methodIdРедагування запису методики концентрації (доступно тільки для адміністраторів){id}DELETEBearer Token, methodIdВидалення запису методики концентрації (доступно тільки для адміністраторів)
+Таблиця Г.5 – Маршрут /api/ UserMethodStatistics/
+ПосиланняМетодПараметриОписGETBearer TokenОтримання записів всіх звітів зі статистикою (доступно тільки для адміністраторів){id}GETBearer Token, id (користувача)Отримання статистики за ідентифікатором користувача (доступно для адміністраторів)
+
+Таблиця Г.6 – Маршрут /api/LearningMaterials/
+ПосиланняМетодПараметриОписGETBearer TokenОтримання записів всіх навчальних матеріалівPOSTBearer TokenДодавання навчального матеріалу (доступно для адміністраторів та репетиторів)my-materialsGETBearer TokenОтримання всіх навчальних матеріалів поточного користувача{id}GETBearer Token, materialIdОтримання навчального матеріалу за його ідентифікатором{id}PUTBearer Token, materialIdРедагування навчального матеріалу (доступно тільки адміністраторам та репетиторам){id}DELETEBearer Token, materialIdВидалення навчального матеріалу (доступно для адміністраторів та репетиторів)
+Таблиця Г.7 – Маршрут /api/ IoTSession/
+ПосиланняМетодПараметриОписadd-sessionPOSTBearer TokenДодавання сесії (доступно тільки для адміністраторів)
+
+
+Продовження табл. Г.7
+ПосиланняМетодПараметриОписuser-sessionsGETBearer TokenОтримання сесій поточного користувача
+Таблиця Г.8 – Маршрут /api/Admin/
+ПосиланняМетодПараметриОписchange-user-statusPOSTBearer Token, userId, statusЗміна статусу користувачаbackup-databasePOSTBearer TokenСтворення резервної копії БДexport-dataPOSTBearer Token, tableNameЕкспорт даних у форматі JSONimport-dataPOSTBearer Token, tableName, fileІмпорт даних
+Таблиця Г.9 – Маршрут /api/BusinessLogic/
+ПосиланняМетодПараметриОписuser-statisticsGETBearer Token, periodStartDate, perodTypeОтримання загальної статистики користувача
+
+	
+
+
+     Продовження табл. Г.9
+ПосиланняМетодПараметриОписupdate-method-statisticsPUTBearer Token, methodId, periodStartDate, perodTypeОновлення статистики методики для користувачаmost-effective-methodGETBearer Token, periodStartDate, perodTypeВизначення найефективнішої методики
+2
+
+
