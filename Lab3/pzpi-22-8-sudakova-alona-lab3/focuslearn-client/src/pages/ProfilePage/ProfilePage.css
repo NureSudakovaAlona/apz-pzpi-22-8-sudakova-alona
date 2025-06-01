@@ -1,0 +1,258 @@
+/* src/pages/ProfilePage/ProfilePage.css */
+
+/* ===== PROFILE GRID LAYOUT (2:1 пропорції) ===== */
+.profile-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 2:1 замість 1:1 */
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.profile-main-column {
+  width: 100%;
+}
+
+.profile-sidebar-column {
+  width: 100%;
+  max-width: 400px; /* Обмежуємо максимальну ширину sidebar */
+}
+
+/* ===== PROFILE HEADER WITH CENTERED AVATAR ===== */
+.profile-header-centered {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+}
+
+.profile-avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+/* ===== PROFILE AVATAR ===== */
+.profile-avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+.profile-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-3xl);
+  font-weight: var(--font-semibold);
+  color: white;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== PROFILE FIELDS ===== */
+.profile-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  gap: var(--space-4);
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+}
+
+.profile-field-label {
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-700);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.profile-field-value {
+  color: var(--color-gray-600);
+  font-weight: var(--font-medium);
+  text-align: right;
+  font-size: var(--text-sm);
+  flex: 1;
+  word-break: break-word;
+}
+
+/* ===== SIDEBAR LINKS ===== */
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-gray-600);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  transition: all var(--duration-200) var(--ease-in-out);
+}
+
+.sidebar-link:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-800);
+  text-decoration: none;
+}
+
+.sidebar-link i {
+  width: 16px;
+  text-align: center;
+  color: var(--color-primary-500);
+  font-size: var(--text-sm);
+}
+
+/* ===== DANGER ZONE ===== */
+/* Замініть секцію DANGER ZONE в ProfilePage.css на це: */
+
+/* ===== DANGER ZONE CARD (рожевий блок як картка) ===== */
+.danger-zone-card {
+  background: var(--color-danger-50) !important;
+  border: 1px solid var(--color-danger-200) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden !important;
+}
+
+.danger-zone-content {
+  padding: var(--space-6);
+}
+
+.danger-zone-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.danger-zone-header h3 {
+  color: var(--color-danger-600);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin: 0;
+}
+
+.danger-zone-header .text-danger-500 {
+  color: var(--color-danger-500);
+  font-size: var(--text-lg);
+}
+
+.danger-zone-text {
+  color: var(--color-gray-600);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+}
+
+.danger-zone-card .btn-danger {
+  background: var(--color-danger-500) !important;
+  color: white !important;
+  border: none !important;
+  padding: var(--space-3) var(--space-4) !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: var(--font-medium) !important;
+  font-size: var(--text-sm) !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-2) !important;
+  transition: all var(--duration-200) var(--ease-in-out) !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2) !important;
+}
+
+.danger-zone-card .btn-danger:hover {
+  background: var(--color-danger-600) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+.danger-zone-card .btn-danger:active {
+  transform: translateY(0) !important;
+}
+
+
+/* ===== SPACE UTILITIES ===== */
+.space-y-4 > * + * {
+  margin-top: var(--space-4);
+}
+
+.space-y-6 > * + * {
+  margin-top: var(--space-6);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+  .profile-container {
+    grid-template-columns: 1fr; /* 1 колонка на планшетах */
+    gap: var(--space-6);
+  }
+  
+  .profile-sidebar-column {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-avatar-large {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-avatar-placeholder {
+    font-size: var(--text-2xl);
+  }
+  
+  .profile-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  
+  .profile-field-label {
+    min-width: auto;
+  }
+  
+  .profile-field-value {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-avatar-large {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .profile-avatar-placeholder {
+    font-size: var(--text-xl);
+  }
+}
