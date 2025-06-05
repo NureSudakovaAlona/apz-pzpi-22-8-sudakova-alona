@@ -32,7 +32,7 @@ FocusLearn - це платформа для підвищення продукт�
 
 ### 1. Клонування репозиторію
 ```
-git clone [<repository-url>](https://github.com/avokadus725/FocusLearn.git)
+git clone https://github.com/avokadus725/FocusLearn.git
 cd focuslearn-server
 ```
 
