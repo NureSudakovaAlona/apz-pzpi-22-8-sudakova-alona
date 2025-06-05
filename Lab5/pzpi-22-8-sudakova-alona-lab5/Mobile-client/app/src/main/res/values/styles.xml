@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Мінімальні стилі без складних залежностей -->
+
+    <!-- Базовий стиль для текстових елементів -->
+    <style name="FocusLearnText">
+        <item name="android:textColor">@color/neutral_800</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Заголовок -->
+    <style name="FocusLearnText.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Підзаголовок -->
+    <style name="FocusLearnText.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/neutral_600</item>
+    </style>
+
+    <!-- Основний текст -->
+    <style name="FocusLearnText.Body">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/neutral_700</item>
+    </style>
+
+    <!-- Допоміжний текст -->
+    <style name="FocusLearnText.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/neutral_500</item>
+    </style>
+
+</resources>

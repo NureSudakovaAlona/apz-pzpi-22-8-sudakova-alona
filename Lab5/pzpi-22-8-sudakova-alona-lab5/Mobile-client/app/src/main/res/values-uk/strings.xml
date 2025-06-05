@@ -1,0 +1,127 @@
+<!-- app/src/main/res/values-uk/strings.xml -->
+<resources>
+    <string name="app_name">FocusLearn</string>
+
+    <!-- Facebook App ID -->
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+
+    <!-- Auth Screen -->
+    <string name="welcome_message">Ласкаво просимо! Увійдіть, щоб продовжити</string>
+    <string name="continue_with_google">Продовжити з Google</string>
+    <string name="continue_with_facebook">Продовжити з Facebook</string>
+    <string name="google_auth">Авторизація Google</string>
+    <string name="facebook_auth">Авторизація Facebook</string>
+    <string name="auth">Авторизація</string>
+    <string name="back">Назад</string>
+    <string name="loading">Завантаження…</string>
+
+    <!-- Main Screen -->
+    <string name="test_methods">Тест Методики</string>
+    <string name="test_materials">Тест Матеріали</string>
+    <string name="api_endpoints_testing">Тестування API endpoints</string>
+    <string name="press_button_to_test">Натисніть кнопку для тестування</string>
+
+    <!-- Errors -->
+    <string name="auth_failed">Помилка авторизації</string>
+    <string name="network_error">Помилка мережі. Перевірте підключення до інтернету.</string>
+    <string name="unknown_error">Сталася невідома помилка</string>
+    <string name="invalid_auth_provider">Невірний провайдер авторизації</string>
+    <string name="no_token_received">Токен авторизації не отримано</string>
+    <string name="failed_to_load">Не вдалося завантажити</string>
+
+    <!-- Success messages -->
+    <string name="methods_loaded_success">✅ Успіх! Завантажено %1$d методик:</string>
+    <string name="materials_loaded_success">✅ Успіх! Завантажено %1$d навчальних матеріалів:</string>
+    <string name="loading_materials">Завантаження матеріалів…</string>
+
+    <!-- Common -->
+    <string name="error_prefix">❌ Помилка: %1$s</string>
+    <string name="retry">Повторити</string>
+    <string name="logout">Вийти</string>
+    <string name="settings">Налаштування</string>
+    <string name="language">Мова</string>
+    <string name="profile">Профіль</string>
+
+    <!-- Timer and Methods -->
+    <string name="select_concentration_method">Оберіть методику концентрації</string>
+    <string name="choose_method_description">Виберіть техніку концентрації, яка найбільше вам підходить</string>
+    <string name="loading_methods">Завантаження методик…</string>
+    <string name="error_loading_methods">Помилка завантаження методик</string>
+    <string name="no_methods_available">Немає доступних методик</string>
+    <string name="start_session">Почати сесію</string>
+    <string name="work_duration">Робота</string>
+    <string name="break_duration">Перерва</string>
+    <string name="minutes_short">хв</string>
+
+    <!-- Timer Screen -->
+    <string name="work_phase">Фаза роботи</string>
+    <string name="break_phase">Фаза перерви</string>
+    <string name="cycle_number">Цикл %d</string>
+    <string name="timer_paused">На паузі</string>
+    <string name="pause_session">Пауза</string>
+    <string name="resume_session">Продовжити</string>
+    <string name="stop_session">Зупинити</string>
+    <string name="keep_app_open_warning">Тримайте додаток відкритим під час сесії</string>
+
+    <!-- Timer Actions -->
+    <string name="session_started">Сесію успішно розпочато</string>
+    <string name="session_paused">Сесію поставлено на паузу</string>
+    <string name="session_resumed">Сесію відновлено</string>
+    <string name="session_stopped">Сесію зупинено</string>
+    <string name="phase_completed">Фазу завершено</string>
+
+    <!-- Statistics -->
+    <string name="statistics">Статистика</string>
+    <string name="daily_stats">День</string>
+    <string name="weekly_stats">Тиждень</string>
+    <string name="monthly_stats">Місяць</string>
+    <string name="total_concentration_time">Загальний час концентрації</string>
+    <string name="completed_sessions">Завершені сесії</string>
+    <string name="productivity_score">Оцінка продуктивності</string>
+    <string name="most_effective_method">Найефективніша методика</string>
+    <string name="hours_short">г</string>
+    <string name="minutes_full">хвилин</string>
+
+    <!-- Navigation -->
+    <string name="timer">Таймер</string>
+    <string name="methods">Методики</string>
+    <string name="stats">Статистика</string>
+
+    <!-- Language Selection -->
+    <string name="select_language">Оберіть мову</string>
+    <string name="cancel">Скасувати</string>
+    <string name="language_changed">Мову змінено</string>
+    <string name="restart_app_message">Перезапустіть додаток для застосування змін мови</string>
+
+    <!-- Settings -->
+    <string name="appearance">Зовнішній вигляд</string>
+    <string name="preferences">Налаштування</string>
+
+    <!-- Profile Screen -->
+    <string name="edit_profile">Редагувати профіль</string>
+    <string name="profile_information">Інформація профілю</string>
+    <string name="user_id">ID користувача</string>
+    <string name="user_name">Ім\'я</string>
+    <string name="email">Електронна пошта</string>
+    <string name="role">Роль</string>
+    <string name="status">Статус</string>
+    <string name="loading_profile">Завантаження профілю…</string>
+    <string name="no_profile_data">Дані профілю недоступні</string>
+    <string name="refresh_profile">Оновити профіль</string>
+    <string name="actions">Дії</string>
+    <string name="success">Успіх</string>
+    <string name="error">Помилка</string>
+
+    <!-- Edit Profile -->
+    <string name="profile_photo_url">URL фото профілю</string>
+    <string name="save">Зберегти</string>
+    <string name="edit_profile_note">Можна змінити тільки ім\'я та фото. Зміна email потребує доступу адміністратора.</string>
+
+    <!-- User roles and statuses -->
+    <string name="student">Студент</string>
+    <string name="tutor">Викладач</string>
+    <string name="admin">Адміністратор</string>
+    <string name="active">Активний</string>
+    <string name="inactive">Неактивний</string>
+    <string name="pending">Очікує</string>
+</resources>
