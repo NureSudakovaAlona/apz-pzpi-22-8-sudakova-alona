@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Application Theme -->
+    <style name="Theme.FocusLearn" parent="Theme.Material3.DayNight">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/focus_green_400</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/focus_green_100</item>
+        <item name="colorOnPrimaryContainer">@color/focus_green_800</item>
+
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/focus_mint_400</item>
+        <item name="colorOnSecondary">@color/neutral_800</item>
+        <item name="colorSecondaryContainer">@color/focus_mint_100</item>
+        <item name="colorOnSecondaryContainer">@color/neutral_800</item>
+
+        <!-- Error colors -->
+        <item name="colorError">@color/error_color</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="colorErrorContainer">@color/error_bg</item>
+        <item name="colorOnErrorContainer">@color/error_text</item>
+
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/focus_green_50</item>
+        <item name="colorOnBackground">@color/neutral_800</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/neutral_800</item>
+        <item name="colorSurfaceVariant">@color/neutral_100</item>
+        <item name="colorOnSurfaceVariant">@color/neutral_600</item>
+
+        <!-- Outline colors -->
+        <item name="colorOutline">@color/neutral_300</item>
+        <item name="colorOutlineVariant">@color/neutral_200</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/focus_green_600</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/white</item>
+<!--        <item name="android:windowLightNavigationBar">true</item>-->
+    </style>
+
+    <!-- Theme for Activities -->
+    <style name="Theme.FocusLearn.NoActionBar" parent="Theme.FocusLearn">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+</resources>
