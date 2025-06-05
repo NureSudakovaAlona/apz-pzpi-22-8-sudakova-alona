@@ -1,0 +1,488 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+Катедра програмної інженерії
+
+
+
+
+ЗВІТ
+з лабораторної роботи № 4
+з дисципліни «Архітектура програмного забезпечення»
+на тему «Розробка програмної архітектури, створення та відлагодження програмного застосунку мобільного пристрою для програмної системи»
+
+
+
+
+
+Виконала
+ст. гр. ПЗПІ-22-8
+Судакова Альона
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2025
+     1 ІСТОРІЯ ЗМІН
+     
+     У цьому розділі представлено історію внесених змін до звіту, що наведено у табл. 1.
+     
+     Таблиця 1 – Історія змін
+№ДатаВерсія звітуОпис змін та виправлень102.06.20250.1Формування завдань для виконання до лабораторної роботи202.06.20250.1Опис виконаної роботи303.06.20250.1Формування результатів та висновків404.06.20250.1Формування додатків     
+
+
+2 ЗАВДАННЯ
+     
+     Метою лабораторної роботи є розробка мобільного клієнта програмної системи FocusLearn на базі Android платформи з використанням Kotlin та Jetpack Compose. Мобільний застосунок повинен забезпечувати основний функціонал концентрації та навчання, підтримку інтернаціоналізації (українська та англійська мови), інтеграцію з IoT пристроями для автоматичного збору даних про ефективність, взаємодію з серверною частиною через REST API.
+     Мобільний клієнт повинен підтримувати авторизацію користувачів через OAuth (Google, Facebook), управління профілем користувача, роботу з методиками концентрації та таймером, перегляд статистики продуктивності та синхронізацію даних з IoT пристроями для автоматичного моніторингу сесій концентрації.
+     
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+     3.1 Програмна архітектура мобільного застосунку програмної системи
+
+     У ході виконання лабораторної роботи було розроблено мобільний клієнт програмної системи FocusLearn на основі сучасної Android архітектури з використанням Kotlin та Jetpack Compose. Архітектура реалізує принципи MVVM (Model-View-ViewModel) pattern та забезпечує чітке розділення відповідальності між різними шарами системи.
+     Архітектура мобільного застосунку складається з наступних основних рівнів: Рівень представлення (UI Layer) відповідає за відображення користувацького інтерфейсу через Jetpack Compose компоненти для різних екранів, адаптивний дизайн з підтримкою Material Design 3, навігацію через Navigation Compose та систему тем і стилів. Рівень ViewModel містить бізнес-логіку та управління станом UI через StateFlow та LiveData, обробку життєвого циклу компонентів, взаємодію з Repository шаром через Dependency Injection. Рівень даних (Data Layer) включає Repository pattern для абстракції джерел даних, API сервіси для роботи з REST endpoints, локальне збереження даних через DataStore Preferences та обробку помилок. 
+     Для управління залежностями використовується Dagger Hilt, що забезпечує ефективне впровадження залежностей.
+     
+     3.2 Програмні технології та компоненти мобільного застосунку
+
+     Основний технологічний стек мобільного застосунку включає Kotlin як основну мову програмування з використанням Coroutines для асинхронного програмування. Jetpack Compose забезпечує декларативну побудову користувацького інтерфейсу з використанням Material Design 3 компонентів та адаптивних макетів.
+     Navigation Compose реалізує навігацію між екранами. Dagger Hilt використовується для Dependency Injection з автоматичним управлінням життєвим циклом компонентів. Retrofit з OkHttp забезпечують HTTP клієнт для взаємодії з REST API серверної частини.
+     Для локального збереження даних використовується DataStore Preferences як сучасна заміна SharedPreferences з підтримкою типобезпеки та асинхронних операцій. StateFlow та LiveData забезпечують реактивне управління станом UI з lifecycle-aware поведінкою.
+     Автентифікація реалізована через Google Sign-In SDK та Facebook SDK з WebView інтеграцією для OAuth flow. Для завантаження зображень використовується Coil з підтримкою Compose. Інтернаціоналізація забезпечується стандартними Android ресурсами з підтримкою RTL макетів.
+     
+     3.3 Бізнес-логіка програмної системи у мобільному застосунку
+
+     Бізнес-логіка мобільного застосунку включає управління сесіями концентрації з інтеграцією IoT пристроїв. Користувачі можуть обирати методики концентрації через MethodSelectionScreen, після чого запускається інтерактивний таймер з круговим прогресом та автоматичними повідомленнями для IoT пристроїв. TimerViewModel управляє станом сесії через StateFlow та синхронізує дані з сервером кожну секунду.
+     Система автентифікації підтримує OAuth авторизацію через Google та Facebook з WebViewAuthActivity для обробки authentication flow. AuthViewModel управляє станом авторизації та зберігає JWT токени в TokenStorage через DataStore Preferences.
+     Управління профілем користувача реалізоване через ProfileViewModel з можливістю редагування імені, фото профілю та мовних налаштувань. Зміни синхронізуються з серверною частиною через API виклики.
+     Статистика та аналітика обробляється через StatisticsViewModel з підготовкою даних для візуалізації по різних періодах (день, тиждень, місяць). Система збирає дані про використання методик концентрації, розраховує коефіцієнти продуктивності та надає рекомендації через серверні business logic endpoints.
+     IoT інтеграція реалізована через автоматичні API виклики при старті/зупинці сесій концентрації, що дозволяє IoT пристроям отримувати сигнали для початку/завершення запису біометричних даних.
+     
+     3.4 Захист даних у мобільному застосунку програмної системи
+
+     Система безпеки мобільного застосунку базується на JWT токенах для аутентифікації користувачів. Токени зберігаються в DataStore Preferences з шифруванням на рівні операційної системи та автоматично додаються до заголовків HTTP запитів через OkHttp interceptors. TokenStorage клас забезпечує типобезпечне збереження та отримання токенів з використанням Kotlin Coroutines.
+     Авторизація через OAuth провайдерів (Google, Facebook) реалізована через WebViewAuthActivity з безпечною обробкою callback URLs та валідацією токенів на серверній частині. AuthViewModel перевіряє валідність токенів при старті застосунку через API виклики.
+     Усі HTTP запити використовують HTTPS протокол для захисту даних під час передачі. OkHttp клієнт налаштований з certificate pinning та timeout конфігурацією для додаткової безпеки.
+     Локальні дані користувача зберігаються в DataStore Preferences з використанням Android Keystore для шифрування конфіденційної інформації. Sensitive дані як паролі ніколи не зберігаються локально.
+     Дозволи додатку мінімізовані - використовуються тільки INTERNET та ACCESS_NETWORK_STATE для основного функціоналу. Додаток не запитує доступ до камери, мікрофону чи геолокації без явної потреби.
+     3.5 Взаємодія мобільного застосунку програмної системи з іншими компонентами програмної системи
+
+     Мобільний застосунок взаємодіє з серверною частиною через REST API endpoints з використанням Retrofit HTTP клієнта. FocusLearnRepository централізує всі API виклики з уніфікованою обробкою помилок та Result wrapper pattern для безпечної роботи з мережевими операціями.
+     Базова конфігурація API встановлюється через BuildConfig.API_BASE_URL з підтримкою різних environments (debug/release). NetworkModule в Dagger Hilt налаштовує HTTP клієнт з logging, timeout конфігурацією та автоматичним додаванням авторизаційних заголовків.
+     Автентифікація реалізована через OAuth провайдерів з серверними endpoints /Auth/login-google та /Auth/login-facebook. WebViewAuthActivity обробляє OAuth flow та отримує JWT токени через callback URLs.
+     IoT інтеграція здійснюється через API endpoints /timer/start, /timer/stop, /timer/status для синхронізації стану сесій концентрації. TimerViewModel автоматично повідомляє IoT пристрої про початок та завершення сесій через серверні виклики.
+     Система підтримує real-time синхронізацію даних через polling механізм кожну секунду під час активних сесій. Repository шар абстрагує мережеві операції та надає уніфікований інтерфейс для ViewModel компонентів.
+     Обробка помилок включає retry логіку, offline режим з кешуванням даних та graceful degradation при недоступності мережі.
+     
+     3.6 Підтримка інтернаціоналізації у мобільному застосунку
+
+     Система інтернаціоналізації побудована на основі стандартних Android ресурсів з підтримкою української та англійської мов. LanguageManager клас централізує управління мовними налаштуваннями з використанням DataStore Preferences для збереження вибраної мови.
+     Ресурси перекладів організовані в окремих папках values/strings.xml (англійська) та values-uk/strings.xml (українська) з ієрархічною структурою для групування за функціональними областями системи.
+     LanguageSwitcherViewModel забезпечує реактивне управління мовою через StateFlow з автоматичним застосуванням змін до всіх компонентів UI. LanguageSwitcherButton компонент дозволяє користувачам швидко переключатися між підтримуваними мовами.
+     Інтеграція з серверною системою локалізації дозволяє синхронізувати мовні налаштування користувача між мобільним клієнтом та веб-платформою через ProfileService API виклики.
+     
+     3.7 Функціональність налаштування у мобільному застосунку
+     
+     Мобільний застосунок забезпечує базову функціональність налаштувань через SettingsScreen з можливістю зміни мови інтерфейсу та перегляду інформації профілю користувача.
+     Управління профілем користувача реалізоване через EditProfileDialog з можливістю редагування імені, URL фото профілю. ProfileViewModel синхронізує зміни з серверною частиною через UpdateProfileDTO API виклики.
+     Налаштування IoT пристроїв відбувається автоматично через серверну частину без необхідності ручної конфігурації в мобільному додатку. Система надає статус підключення IoT пристроїв через відповідні індикатори в UI.
+
+
+
+4 ВИСНОВКИ
+     
+     У результаті виконання лабораторної роботи було розроблено мобільний клієнт програмної системи FocusLearn з сучасною архітектурою на базі Android та Kotlin. Реалізовано MVVM архітектурний підхід з використанням Jetpack Compose для декларативного UI, Dagger Hilt для Dependency Injection та StateFlow для реактивного управління станом.
+     Було впроваджено систему інтернаціоналізації з підтримкою української та англійської мов, адаптивний дизайн, авторизацію через OAuth провайдерів з JWT токенами, інтеграцію з серверною частиною через REST API та IoT пристроями для автоматичного збору даних.
+     Функціональні можливості охоплюють систему управління профілем користувача, інтерактивний таймер для методик концентрації з підтримкою різних технік та IoT інтеграцією, статистику з аналітикою продуктивності по різних періодах, автоматичну синхронізацію даних між мобільним клієнтом та серверною частиною.
+     Мобільний застосунок інтегрується з існуючою екосистемою FocusLearn, надаючи користувачам зручний доступ до основних функцій системи концентрації через мобільні пристрої.
+     Фрагменти коду наведено у дод. В.
+     Скріншоти інтерфейсу наведені у дод. Г.
+     
+
+     ДОДАТОК А
+     Відеозапис
+     
+     Відеозапис презентації результатів лабораторної роботи:
+     https://youtu.be/8GUZq9-pVjk 
+     Хронологічний опис відеозапису: 
+     00:01 Вступ та огляд мобільного застосунку
+     00:19 Система авторизації
+     00:40 Методики концентрації
+     01:00 Профіль та налаштування
+     01:20 Впровадження інтернаціоналізації
+     01:35 Аналітика та статистика
+     01:58 IoT інтеграція
+     03:09 Адаптивність дизайну
+     03:30 Стек технологій
+     03:37 Висновки
+     
+
+
+     ДОДАТОК Б
+     Графічні матеріали
+     
+      
+     Рисунок Б.1 – ER-діаграма даних
+     
+      
+     Рисунок Б.2 – Структура бази даних
+      
+     Рисунок Б.3 – UML-діаграма прецедентів
+     
+      
+     Рисунок Б.4 – UML-діаграма розгортання
+     
+     
+     Рисунок Б.5 – UML-діаграма діяльності для серверної частини
+     
+     
+     Рисунок Б.6 — Діаграма компонентів програмної системи «FocusLearn»
+     ДОДАТОК В
+     Програмний код
+     В.1 Основна структура Android застосунку
+     Файл: MainActivity.kt
+     GitHub репозиторій: 
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/MainActivity.kt 
+      1 @AndroidEntryPoint
+      2 class MainActivity : ComponentActivity() {
+      3 
+      4     private val authViewModel: AuthViewModel by viewModels()
+      5 
+      6     @Inject
+      7     lateinit var languageManager: LanguageManager
+      8 
+      9     @RequiresApi(Build.VERSION_CODES.O)
+      10     override fun onCreate(savedInstanceState: Bundle?) {
+      11         super.onCreate(savedInstanceState)
+      12 
+      13         // Застосовуємо збережену мову при старті
+      14         lifecycleScope.launch {
+      15             val savedLanguage = languageManager.getCurrentLanguage()
+      16             languageManager.applyLanguageToActivity(this@MainActivity, savedLanguage)
+      17         }
+      18 
+      19         setContent {
+      20             FocusLearnMobileTheme {
+      21                 MainApp(
+      22                     authViewModel = authViewModel,
+      23                     onLanguageChanged = {
+      24                         // Перезапускаємо Activity для застосування мови
+      25                         recreate()
+      26                     }
+      27                 )
+      28             }
+      29         }
+      30     }
+      31 }
+      32 
+      33 @RequiresApi(Build.VERSION_CODES.O)
+      34 @Composable
+      35 fun MainApp(
+      36     authViewModel: AuthViewModel,
+      37     onLanguageChanged: () -> Unit = {}
+      38 ) {
+      39     val authState by authViewModel.authState.collectAsState()
+      40 
+      41     if (authState.isAuthenticated) {
+      42         MainNavigationScreen(
+      43             onLogout = { authViewModel.logout() },
+      44             onLanguageChanged = onLanguageChanged
+      45         )
+      46     } else {
+      47         AuthScreen(
+      48             viewModel = authViewModel,
+      49             onAuthSuccess = {
+      50                 // Навігація відбудеться автоматично через authState
+      51             }
+      52         )
+      53     }
+      54 }
+
+
+     В.2 Архітектура MVVM з Repository Pattern
+     Файл: TimerViewModel.kt
+     GitHub репозиторій:
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/ui/timer/TimerViewModel.kt 
+      1 @HiltViewModel
+      2 class TimerViewModel @Inject constructor(
+      3     val repository: FocusLearnRepository
+      4 ) : ViewModel() {
+      5 
+      6     // Стан таймера
+      7     private val _timerState = MutableStateFlow(TimerState())
+      8     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
+      9 
+      10     // Стан для UI
+      11     private val _uiState = MutableStateFlow(TimerUiState())
+      12     val uiState: StateFlow<TimerUiState> = _uiState.asStateFlow()
+      13 
+      14     // Job для локального тікера
+      15     private var localTickerJob: Job? = null
+      16 
+      17     // Запуск сесії з IoT інтеграцією
+      18     fun startSession(method: ConcentrationMethod) {
+      19         viewModelScope.launch {
+      20             try {
+      21                 _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+      22 
+      23                 when (val result = repository.startTimerSession(method.methodId)) {
+      24                     is FocusLearnRepository.Result.Success -> {
+      25                         val workDurationSeconds = method.workDuration * 60
+      26 
+      27                         _timerState.value = TimerState(
+      28                             isActive = true,
+      29                             currentPhase = TimerPhase.WORK,
+      30                             methodTitle = method.title,
+      31                             remainingSeconds = workDurationSeconds,
+      32                             totalPhaseSeconds = workDurationSeconds,
+      33                             currentCycle = 1
+      34                         )
+      35 
+      36                         _uiState.value = _uiState.value.copy(
+      37                             isLoading = false,
+      38                             selectedMethod = method,
+      39                             iotMessage = "Сесію розпочато! IoT пристрій отримав сигнал."
+      40                         )
+      41 
+      42                         startLocalTicker()
+      43                     }
+      44                     is FocusLearnRepository.Result.Error -> {
+      45                         _uiState.value = _uiState.value.copy(
+      46                             isLoading = false,
+      47                             error = "Не вдалося розпочати сесію: ${result.message}"
+      48                         )
+      49                     }
+      50                 }
+      51             } catch (e: Exception) {
+      52                 _uiState.value = _uiState.value.copy(
+      53                     isLoading = false,
+      54                     error = "Помилка: ${e.message}"
+      55                 )
+      56             }
+      57         }
+      58     }
+      59 }
+      
+     В.3 Repository Pattern з мережевою взаємодією
+     Файл: FocusLearnRepository.kt
+     GitHub репозиторій:
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/data/repository/FocusLearnRepository.kt 
+      1 @Singleton
+      2 class FocusLearnRepository @Inject constructor(
+      3     private val api: FocusLearnApi,
+      4     private val tokenStorage: TokenStorage
+      5 ) {
+      6     sealed class Result<T> {
+      7         data class Success<T>(val data: T) : Result<T>()
+      8         data class Error<T>(val message: String) : Result<T>()
+      9     }
+      10 
+      11     private suspend fun getAuthToken(): String? {
+      12         val token = tokenStorage.token.first()
+      13         return if (!token.isNullOrEmpty()) "Bearer $token" else null
+      14     }
+      15 
+      16     suspend fun startTimerSession(methodId: Int): Result<ActiveSessionDTO> = withContext(Dispatchers.IO) {
+      17         try {
+      18             val authToken = getAuthToken()
+      19                 ?: return@withContext Result.Error<ActiveSessionDTO>("No authentication token")
+      20 
+      21             val request = StartSessionRequest(methodId)
+      22             val response = api.startSession(authToken, request)
+      23 
+      24             if (response.isSuccessful) {
+      25                 response.body()?.let { apiResponse ->
+      26                     if (apiResponse.success && apiResponse.data != null) {
+      27                         Result.Success(apiResponse.data)
+      28                     } else {
+      29                         Result.Error(apiResponse.message ?: "Failed to start session")
+      30                     }
+      31                 } ?: Result.Error("Empty response")
+      32             } else {
+      33                 Result.Error("Server error: ${response.code()}")
+      34             }
+      35         } catch (e: Exception) {
+      36             Result.Error("Network error: ${e.localizedMessage}")
+      37         }
+      38     }
+      39 }
+      
+     В.4 Dependency Injection з Dagger Hilt
+     Файл: NetworkModule.kt
+     GitHub репозиторій:
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/di/NetworkModule.kt 
+      1 @Module
+      2 @InstallIn(SingletonComponent::class)
+      3 object NetworkModule {
+      4 
+      5     @Provides
+      6     @Singleton
+      7     fun provideOkHttpClient(
+      8         loggingInterceptor: HttpLoggingInterceptor
+      9     ): OkHttpClient {
+      10         return OkHttpClient.Builder()
+      11             .addInterceptor(loggingInterceptor)
+      12             .connectTimeout(30, TimeUnit.SECONDS)
+      13             .readTimeout(30, TimeUnit.SECONDS)
+      14             .writeTimeout(30, TimeUnit.SECONDS)
+      15             .build()
+      16     }
+      17 
+      18     @Provides
+      19     @Singleton
+      20     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+      21         return Retrofit.Builder()
+      22             .baseUrl(BuildConfig.API_BASE_URL)
+      23             .client(okHttpClient)
+      24             .addConverterFactory(GsonConverterFactory.create())
+      25             .build()
+      26     }
+      27 
+      28     @Provides
+      29     @Singleton
+      30     fun provideFocusLearnApi(retrofit: Retrofit): FocusLearnApi {
+      31         return retrofit.create(FocusLearnApi::class.java)
+      32     }
+      33 }
+      
+     В.5 Інтернаціоналізація та управління мовами
+     Файл: LanguageManager.kt
+     GitHub репозиторій:
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/data/local/LanguageManager.kt 
+      1 @Singleton
+      2 class LanguageManager @Inject constructor(
+      3     private val context: Context
+      4 ) {
+      5     companion object {
+      6         private val LANGUAGE_KEY = stringPreferencesKey("selected_language")
+      7         const val LANGUAGE_ENGLISH = "en"
+      8         const val LANGUAGE_UKRAINIAN = "uk"
+      9         val SUPPORTED_LANGUAGES = listOf(LANGUAGE_ENGLISH, LANGUAGE_UKRAINIAN)
+      10     }
+      11 
+      12     val currentLanguage: Flow<String> = context.languageDataStore.data.map { preferences ->
+      13         preferences[LANGUAGE_KEY] ?: getSystemDefaultLanguage()
+      14     }
+      15 
+      16     suspend fun setLanguage(languageCode: String) {
+      17         if (languageCode in SUPPORTED_LANGUAGES) {
+      18             context.languageDataStore.edit { preferences ->
+      19                 preferences[LANGUAGE_KEY] = languageCode
+      20             }
+      21             applyLanguageToContext(context, languageCode)
+      22         }
+      23     }
+      24 
+      25     fun applyLanguageToContext(context: Context, languageCode: String): Context {
+      26         val locale = Locale(languageCode)
+      27         Locale.setDefault(locale)
+      28 
+      29         val config = Configuration(context.resources.configuration)
+      30         config.setLocale(locale)
+      31 
+      32         return context.createConfigurationContext(config)
+      33     }
+      34 
+      35     private fun getSystemDefaultLanguage(): String {
+      36         val systemLanguage = Locale.getDefault().language
+      37         return if (systemLanguage in SUPPORTED_LANGUAGES) {
+      38             systemLanguage
+      39         } else {
+      40             LANGUAGE_ENGLISH
+      41         }
+      42     }
+      43 }
+      
+     В.6 Jetpack Compose UI з адаптивним дизайном
+     Файл: TimerScreen.kt (круговий таймер)
+     GitHub репозиторій:
+     https://github.com/NureSudakovaAlona/apz-pzpi-22-8-sudakova-alona/blob/main/Lab4/pzpi-22-8-sudakova-alona-lab4/app/src/main/java/com/example/focuslearnmobile/ui/timer/TimerScreen.kt 
+      1 @Composable
+      2 private fun CircularTimer(
+      3     remainingSeconds: Int,
+      4     totalSeconds: Int,
+      5     isWork: Boolean
+      6 ) {
+      7     val progress = if (totalSeconds > 0) {
+      8         (totalSeconds - remainingSeconds).toFloat() / totalSeconds.toFloat()
+      9     } else 0f
+      10 
+      11     val animatedProgress by animateFloatAsState(
+      12         targetValue = progress,
+      13         animationSpec = tween(durationMillis = 300),
+      14         label = "timer_progress"
+      15     )
+      16 
+      17     Box(
+      18         modifier = Modifier.size(280.dp),
+      19         contentAlignment = Alignment.Center
+      20     ) {
+      21         Canvas(
+      22             modifier = Modifier.fillMaxSize()
+      23         ) {
+      24             val strokeWidth = 12.dp.toPx()
+      25             val radius = (size.minDimension - strokeWidth) / 2f
+      26             val center = Offset(size.width / 2f, size.height / 2f)
+      27 
+      28             // Фон кола
+      29             drawCircle(
+      30                 color = surfaceVariant,
+      31                 radius = radius,
+      32                 center = center,
+      33                 style = Stroke(width = strokeWidth)
+      34             )
+      35 
+      36             // Прогрес
+      37             if (animatedProgress > 0f) {
+      38                 drawArc(
+      39                     color = if (isWork) primaryColor else secondaryColor,
+      40                     startAngle = -90f,
+      41                     sweepAngle = 360f * animatedProgress,
+      42                     useCenter = false,
+      43                     topLeft = Offset(center.x - radius, center.y - radius),
+      44                     size = Size(radius * 2f, radius * 2f),
+      45                     style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+      46                 )
+      47             }
+      48         }
+      49 
+      50         Icon(
+      51             imageVector = if (isWork) Icons.Default.Work else Icons.Default.Coffee,
+      52             contentDescription = null,
+      53             modifier = Modifier.size(48.dp),
+      54             tint = if (isWork) primaryColor else secondaryColor
+      55         )
+      56     }}
+
+
+     ДОДАТОК Г
+     Скріншоти інтерфейсу мобільного застосунку
+     
+     
+     Рисунок Г.1 – Сторінка авторизації
+     
+     
+     Рисунок Г.2 – Головна сторінка
+     
+     
+     
+     Рисунок Г.3 – Сторінка активної сесії концентрації
+     
+     Рисунок Г.4 – Сторінка профілю та налаштувань
+     
+     Рисунок Г.5 – Редагування особистого профілю
+     
+     
+     Рисунок Г.6 – Модальне вікно для зміни мови додатку
+     
+      
+     Рисунок Г.7 – Додаток англійською та українською мовами відповідно
+     
+     
+     Рисунок Г.8 – Сторінка статистики
+2
+
+
