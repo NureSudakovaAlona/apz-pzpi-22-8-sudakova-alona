@@ -1,0 +1,24 @@
+[
+    {
+        "UserName": "Test User1",
+        "Email": "test1@example.com",
+        "Role": "Student",
+        "ProfilePhoto": null,
+        "Language": "en",
+        "ProfileStatus": "Active",
+        "AuthProvider": "Google",
+        "ProviderId": "113456789",
+        "RegistrationDate": "2025-05-28T10:00:00"
+    },
+    {
+        "UserName": "Test User2",
+        "Email": "test2@example.com",
+        "Role": "Tutor",
+        "ProfilePhoto": null,
+        "Language": "en",
+        "ProfileStatus": "Active",
+        "AuthProvider": "Facebook",
+        "ProviderId": "137654321",
+        "RegistrationDate": "2025-05-28T11:00:00"
+    }
+]
