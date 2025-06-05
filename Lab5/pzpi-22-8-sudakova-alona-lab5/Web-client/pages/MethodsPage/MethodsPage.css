@@ -1,0 +1,13 @@
+/* MethodsPage.css */
+
+/* Основний контейнер */
+.methods-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-secondary-100) 100%);
+}
+
+/* Основний контент */
+.methods-content {
+  flex: 1;
+  min-height: 60vh;
+}
