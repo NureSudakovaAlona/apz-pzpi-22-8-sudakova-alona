@@ -19,7 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // API URLs для різних build types
-        buildConfigField("String", "API_BASE_URL", "\"https://7ac0-79-117-84-80.ngrok-free.app/api/\"")
+        buildConfigField("String", "API_BASE_URL", "\"YOUR_SERVER_URL/api/\"")
     }
 
     buildTypes {
@@ -29,10 +29,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://7ac0-79-117-84-80.ngrok-free.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"YOUR_SERVER_URL/api/\"")
         }
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"https://7ac0-79-117-84-80.ngrok-free.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"YOUR_SERVER_URL/api/\"")
         }
     }
 
