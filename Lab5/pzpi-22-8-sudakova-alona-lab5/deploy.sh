@@ -124,7 +124,7 @@ main() {
     deploy_server
     deploy_client
     
-    log "🎉 Deployment completed successfully!"
+    log "Deployment completed successfully!"
     log "Server: https://localhost:7124"
     log "Client: http://localhost:3000"
     log "Swagger: https://localhost:7124/swagger"
