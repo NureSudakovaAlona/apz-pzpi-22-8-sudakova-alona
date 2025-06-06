@@ -1,0 +1,455 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+Катедра програмної інженерії
+
+
+
+
+ЗВІТ
+з лабораторної роботи № 5
+з дисципліни «Архітектура програмного забезпечення»
+на тему «Розробка програмної архітектури, створення та відлагодження програмного застосунку мобільного пристрою для програмної системи»
+
+
+
+
+
+Виконала
+ст. гр. ПЗПІ-22-8
+Судакова Альона
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2025
+     1 ІСТОРІЯ ЗМІН
+     
+     У цьому розділі представлено історію внесених змін до звіту, що наведено у табл. 1.
+     
+     Таблиця 1 – Історія змін
+№ДатаВерсія звітуОпис змін та виправлень105.06.20250.1Формування завдань для виконання до лабораторної роботи205.06.20250.1Опис виконаної роботи306.06.20250.1Формування результатів та висновків406.06.20250.1Формування додатків     
+
+
+2 ЗАВДАННЯ
+     
+     Метою лабораторної роботи є демонстрація повного процесу розгортання програмної системи FocusLearn, що включає налаштування та запуск всіх трьох компонентів системи: серверної частини на базі ASP.NET Core 7.0, веб-клієнта на базі React 18 та мобільного застосунку на платформі Android з використанням Kotlin.
+     Лабораторна робота повинна продемонструвати послідовність кроків для розгортання системи з нуля, включаючи встановлення необхідних залежностей, налаштування конфігураційних файлів, створення та ініціалізацію бази даних, налаштування OAuth авторизації, запуск всіх компонентів системи та перевірку їх взаємодії.
+     Результатом виконання має бути повністю функціональна система FocusLearn з можливістю авторизації користувачів, роботи з методиками концентрації, управління завданнями, перегляду навчальних матеріалів та аналітики продуктивності.
+     
+     
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+     3.1 Загальна архітектура системи та компоненти для розгортання
+
+     Програмна система FocusLearn складається з трьох основних компонентів, які працюють як єдина екосистема для управління концентрацією та продуктивністю у навчальному процесі.
+     Серверна частина реалізована на ASP.NET Core 7.0 та забезпечує REST API для взаємодії з клієнтськими додатками. Сервер використовує SQL Server для збереження даних, Entity Framework Core як ORM, JWT токени для аутентифікації та OAuth2 інтеграцію з Google та Facebook. Додатково сервер підтримує MQTT протокол для взаємодії з IoT пристроями та систему локалізації з підтримкою української та англійської мов.
+     Веб-клієнт побудований на React 18 з використанням сучасних підходів до розробки frontend додатків. Клієнт забезпечує адаптивний інтерфейс для всіх типів пристроїв, використовує Context API для управління станом, React Router для навігації та Axios для HTTP запитів. Система стилізації базується на власній дизайн системі з підтримкою CSS модулів.
+     Мобільний застосунок розроблений для Android платформи з використанням Kotlin та Jetpack Compose. Застосунок реалізує MVVM архітектуру з використанням Dagger Hilt для Dependency Injection, Retrofit для мережевих запитів та DataStore для локального збереження даних. Особливістю мобільного клієнта є інтеграція з IoT пристроями для автоматичного збору даних про сесії концентрації.
+     
+     3.2 Розгортання серверної частини системи
+
+     Процес розгортання серверної частини починається з підготовки середовища розробки та встановлення необхідних компонентів. Для успішного розгортання необхідно встановити .NET 7.0 SDK, SQL Server або SQL Server LocalDB для розробки, а також Visual Studio 2022 або Visual Studio Code як середовище розробки.
+     Клонування репозиторію виконується командою git clone https://github.com/avokadus725/FocusLearn.git з подальшим переходом до директорії серверної частини cd focuslearn-server. Для роботи з базою даних необхідно встановити Entity Framework Tools глобально командою dotnet tool install --global dotnet-ef.
+     Налаштування бази даних включає створення файлу appsettings.Development.json з конфігурацією підключення до SQL Server LocalDB. Connection string має формат "Server=(localdb)\\mssqllocaldb;Database=FocusLearnDB;Trusted_Connection=true;TrustServerCertificate=true;". Після налаштування конфігурації виконується команда dotnet ef database update для створення структури бази даних згідно з міграціями.
+     Конфігурація JWT аутентифікації вимагає встановлення секретного ключа довжиною не менше 32 символів, налаштування Issuer та Audience параметрів. OAuth інтеграція з Google та Facebook потребує отримання відповідних ключів від провайдерів та їх додавання до конфігураційного файлу.
+     Запуск серверної частини виконується послідовними командами dotnet restore для відновлення пакетів та dotnet run для запуску сервера. Сервер стає доступним за адресою https://localhost:7124, а API документація через Swagger доступна за адресою https://localhost:7124/swagger.
+     
+     3.3 Розгортання веб-клієнта системи
+
+     Розгортання веб-клієнта потребує встановлення Node.js версії 16 або новішої та менеджера пакетів npm або yarn. Після клонування репозиторію необхідно перейти до директорії клієнтської частини командою cd focuslearn-client.
+     Встановлення залежностей виконується командою npm install або yarn install, що завантажує всі необхідні пакети згідно з файлом package.json. Процес встановлення включає React 18, React Router DOM, Axios, FontAwesome іконки, react-i18next для інтернаціоналізації та інші бібліотеки.
+     Конфігурація веб-клієнта здійснюється через створення файлу .env в корені проєкту з налаштуваннями API URL, посиланням на серверну частину та іншими параметрами середовища. Базова конфігурація включає REACT_APP_API_URL=https://localhost:7124/api та REACT_APP_SERVER_URL=https://localhost:7124.
+     Запуск для розробки виконується командою npm start або yarn start, що запускає development сервер на порту 3000. Веб-додаток стає доступним за адресою http://localhost:3000 з автоматичним перезавантаженням при змінах в коді.
+     Для продакшн збірки використовується команда npm run build або yarn build, що створює оптимізовані статичні файли в папці build/. Ці файли можуть бути розгорнуті на будь-якому веб-сервері або CDN.
+     
+     3.4 Розгортання мобільного застосунку системи
+
+     Розгортання мобільного застосунку потребує встановлення Android Studio Arctic Fox або новішої версії, JDK 8+ (рекомендується JDK 11), Android SDK з мінімальним API Level 24 та Kotlin 1.8+.
+     Після клонування репозиторію необхідно перейти до директорії мобільного застосунку cd focuslearn-mobile та відкрити проєкт в Android Studio. Система автоматично виявить Gradle конфігурацію та запропонує синхронізацію проєкту.
+     Налаштування API URL виконується в файлі app/build.gradle.kts через додавання buildConfigField("String", "API_BASE_URL", "\"https://localhost:7124/api/\""). Для HTTPS підключень необхідно додати network security config для дозволу локальних з'єднань або використовувати ngrok для тунелювання.
+     OAuth конфігурація потребує додавання Google Client ID та Facebook App ID до файлу app/src/main/res/values/strings.xml. Ці ключі мають відповідати налаштуванням серверної частини для забезпечення коректної авторизації.
+     Збірка та запуск застосунку виконується через Android Studio з вибором цільового пристрою (емулятор або фізичний пристрій). Gradle автоматично збирає APK файл та встановлює його на обраний пристрій.
+     
+     3.5 Налаштування взаємодії між компонентами системи
+
+     Після успішного розгортання всіх компонентів необхідно налаштувати їх взаємодію для забезпечення коректної роботи системи як єдиного цілого.
+     CORS політика серверної частини повинна включати домени веб-клієнта та мобільного застосунку. Для веб-клієнта це http://localhost:3000 для розробки та продакшн домен для релізу. Мобільний застосунок потребує дозволу на мережеві з'єднання через network security config.
+     OAuth конфігурація повинна бути синхронізована між всіма компонентами. Redirect URLs для Google та Facebook авторизації мають включати як веб домени, так і custom URL schemes для мобільного застосунку. Серверна частина повинна підтримувати обробку токенів від обох типів клієнтів.
+     JWT токени генеруються сервером та використовуються клієнтами для авторизації API запитів. Веб-клієнт зберігає токени в localStorage, а мобільний застосунок використовує DataStore Preferences з шифруванням.
+     IoT інтеграція працює через серверну частину як посередник між мобільним застосунком та IoT пристроями. При запуску сесії концентрації мобільний додаток відправляє запит на сервер, який через MQTT повідомляє IoT пристрої про початок збору даних.
+     
+     3.6 Тестування функціональності системи після розгортання
+
+     Перевірка коректності розгортання включає тестування всіх основних функцій системи та взаємодії між компонентами.
+     Авторизація тестується через спробу входу в систему через Google та Facebook як у веб-клієнті, так і в мобільному застосунку. Успішна авторизація повинна створювати JWT токен та надавати доступ до захищених функцій.
+     Функціональність таймера концентрації перевіряється запуском сесії з різними методиками через мобільний застосунок та веб-інтерфейс. Система повинна коректно відстежувати час, переключати фази роботи та відпочинку, зберігати дані сесій.
+     Управління завданнями тестується створенням нових завдань викладачами, взяттям завдань студентами, завантаженням файлів рішень та процесом оцінювання. Всі дії повинні коректно відображатися в обох клієнтах.
+     Система навчальних матеріалів перевіряється додаванням нових матеріалів, їх категоризацією та доступом студентів до контенту. Веб-клієнт повинен надавати попередній перегляд файлів та зручну навігацію.
+     Аналітика та статистика тестується через перегляд даних продуктивності по різних періодах, розрахунок коефіцієнтів ефективності та генерацію рекомендацій для покращення навчального процесу.
+     
+     3.7 Інтернаціоналізація та локалізація системи
+     
+     Система FocusLearn підтримує українську та англійську мови з можливістю динамічного перемикання без перезапуску додатків.
+     Веб-клієнт використовує react-i18next бібліотеку з файлами перекладів у форматі JSON, розташованими в директоріях src/locale/uk/ та src/locale/en/. LanguageContext забезпечує глобальне управління мовою з автоматичним збереженням вибору користувача в localStorage.
+     Мобільний застосунок використовує стандартні Android ресурси з файлами strings.xml в папках values/ (англійська) та values-uk/ (українська). LanguageManager клас забезпечує програмне перемикання мови з збереженням налаштувань в DataStore Preferences.
+
+
+4 ВИСНОВКИ
+     
+     У результаті виконання лабораторної роботи було успішно здійснено повне розгортання програмної системи FocusLearn, що включає всі три основні компоненти: серверну частину, веб-клієнт та мобільний застосунок.
+     Було продемонстровано послідовність кроків для налаштування середовища розробки, встановлення необхідних залежностей, конфігурації всіх компонентів системи та їх запуску. Особливу увагу приділено налаштуванню взаємодії між компонентами через REST API, конфігурації OAuth авторизації та забезпеченню безпеки передачі даних.
+     Розгортання серверної частини включало створення та ініціалізацію бази даних SQL Server, налаштування Entity Framework міграцій, конфігурацію JWT токенів та OAuth провайдерів. Сервер успішно запущено та протестовано через Swagger документацію.
+     Веб-клієнт було розгорнуто з повним функціоналом для всіх ролей користувачів, включаючи студентів, викладачів та адміністраторів. Реалізовано адаптивний дизайн, систему навігації, управління станом через Context API та інтернаціоналізацію.
+     Мобільний застосунок для Android платформи успішно інтегровано з серверною частиною, реалізовано OAuth авторизацію через WebView, функціонал таймера концентрації з IoT інтеграцією та систему локалізації.
+     Система забезпечує коректну взаємодію всіх компонентів, підтримує багатомовність (українська та англійська), різні ролі користувачів та інтеграцію з IoT пристроями для автоматичного збору даних про ефективність навчального процесу.
+     Результатом роботи є повністю функціональна система FocusLearn, готова до використання в реальних умовах навчального процесу для покращення концентрації та продуктивності студентів.
+     Графічні елементи наведені у дод. Б, фрагменти коду наведено у дод. В.
+     ДОДАТОК А
+     Відеозапис
+     
+     Відеозапис доповіді на YouTube:
+     https://youtu.be/tthImWSFREs 
+     Хронологічний опис відеозапису: 
+     00:00 Підготовка середовища
+     00:35 Розгортання серверної частини
+     01:08 Встановлення ORM
+     02:16 Розгортання веб-клієнту
+     02:48 Налаштування файлу конфігурацій
+     03:21 Розгортання мобільного застосунку
+     04:40 OAuth конфігурація
+     05:30 Перевірка роботи системи
+     06:30 Інтернаціоналізація системи
+     07:01 Висновки
+     
+
+
+     ДОДАТОК Б
+     Графічні матеріали
+     
+      
+     Рисунок Б.1 – ER-діаграма даних
+     
+      
+     Рисунок Б.2 – Структура бази даних
+      
+     Рисунок Б.3 – UML-діаграма прецедентів
+     
+      
+     Рисунок Б.4 – UML-діаграма розгортання
+     
+     
+     Рисунок Б.5 – UML-діаграма діяльності для серверної частини
+     
+     
+     Рисунок Б.6 — Діаграма компонентів програмної системи «FocusLearn»
+     ДОДАТОК В
+     Команди для розгортання програмної системи
+     В.1 Розгортання серверної частини системи
+     В.1.1 Команди підготовки середовища
+     Перевірка встановлення .NET SDK:
+      1 dotnet --version
+     Очікуваний результат: 7.0.x або новіший
+     Клонування репозиторію:
+      1 git clone https://github.com/avokadus725/FocusLearn.git
+      2 cd FocusLearn/focuslearn-server
+     Встановлення Entity Framework Tools:
+      1 dotnet tool install --global dotnet-ef
+     Перевірка встановлення
+      1 dotnet ef –version
+      
+     В.1.2 Конфігураційний файл appsettings.Development.json
+      1 {
+      2  "ConnectionStrings": {
+      3   "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=FocusLearnDB;Trusted_Connection=true;TrustServerCertificate=true;"
+      4  },
+      5  "Jwt": {
+      6    "SecretKey": "super-secret-key-for-focuslearn-system-minimum-32-characters",
+      7    "Issuer": "FocusLearnAPI",
+      8    "Audience": "FocusLearnClient"
+      9  },
+      10  "Authentication": {
+      11    "Google": {
+      12     "ClientId": "your-google-client-id.apps.googleusercontent.com",
+      13      "ClientSecret": "your-google-client-secret"
+      14    },
+      15    "Facebook": {
+      16      "AppId": "your-facebook-app-id",
+      17      "AppSecret": "your-facebook-app-secret"
+      18    }
+      19  },
+      20  "ClientUrl": "http://localhost:3000",
+      21  "Logging": {
+      22    "LogLevel": {
+      23      "Default": "Information",
+      24      "Microsoft.AspNetCore": "Warning"
+      25    }
+      26  },
+      27  "AllowedHosts": "*"
+      28 }
+     
+     В.1.3 Команди запуску серверної частини
+     Відновлення пакетів:
+      1 dotnet restore
+     Створення бази даних:
+      1 dotnet ef database update
+     При помилках перевірте connection string та SQL Server
+     Запуск серверу:
+      1 dotnet run
+     Альтернативно для development режиму:
+      1 dotnet run --environment Development
+     Перевірка запуску:
+     Для перевірки запуску відкрийте браузер та перейдіть на:
+     https://localhost:7124/swagger
+     або
+      1 curl -k https://localhost:7124/api/ConcentrationMethods
+     
+     В.2 Розгортання веб-клієнта системи
+     В.2.1 Команди підготовки середовища
+     Перевірка Node.js:
+      1 node --version
+     Очікуваний результат: v16.x.x або новіший
+      1 npm --version
+     Очікуваний результат: 8.x.x або новіший
+     Перехід до клієнтської частини:
+      1 cd ../focuslearn-client
+     Встановлення залежностей:
+      1 npm install
+     Або використовуючи yarn:
+      1 yarn install
+     
+     В.2.2 Конфігураційний файл .env
+     Створіть файл .env в корені focuslearn-client:
+      1 REACT_APP_API_URL=https://localhost:7124/api
+      2 REACT_APP_SERVER_URL=https://localhost:7124
+     OAuth Configuration (для production)
+      1 REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id
+      2 REACT_APP_FACEBOOK_APP_ID=your-facebook-app-id
+     
+     В.2.3 Команди запуску веб-клієнта
+     Запуск development сервера:
+      1 npm start
+      2 // Або yarn start
+     Збірка для продакшену:
+      1 npm run build
+     Результат буде в папці build/
+     Запуск тестів:
+      1 npm test
+     
+     В.2.4 Налаштування proxy для development
+     Файл package.json повинен містити:
+     
+      1 {
+      2  "name": "focuslearn-client",
+      3  "version": "0.1.0",
+      4  "private": true,
+      5  "proxy": "https://localhost:7124",
+      6  "dependencies": {
+      7    "react": "^18.2.0",
+      8    "react-dom": "^18.2.0",
+      9    "react-router-dom": "^6.8.0",
+      10    "axios": "^1.3.0",
+      11   "react-i18next": "^12.1.0",
+      12    "@fortawesome/react-fontawesome": "^0.2.0"
+      13  },
+      14  "scripts": {
+      15    "start": "react-scripts start",
+      16    "build": "react-scripts build",
+      17    "test": "react-scripts test",
+      18    "eject": "react-scripts eject"
+      19  }
+      20 }
+     
+     В.3 Розгортання мобільного застосунку
+     В.3.1 Налаштування Android Studio
+     Перевірка встановлення Java:
+      1 java -version
+     Очікуваний результат: java version "11.x.x" або новіший
+     Змінні середовища для Android (додайте до ~/.bashrc або ~/.zshrc):
+      1 export ANDROID_HOME=$HOME/Android/Sdk
+      2 export PATH=$PATH:$ANDROID_HOME/emulator
+      3 export PATH=$PATH:$ANDROID_HOME/platform-tools
+      4 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+     
+     В.3.2 Конфігурація Gradle для мобільного застосунку
+     Файл app/build.gradle.kts:
+      1 android {
+      2     namespace = "com.example.focuslearnmobile"
+      3     compileSdk = 34
+      4 
+      5     defaultConfig {
+      6         applicationId = "com.example.focuslearnmobile"
+      7         minSdk = 24
+      8         targetSdk = 34
+      9         versionCode = 1
+      10         versionName = "1.0"
+      11 
+      12         // API Configuration
+      13         buildConfigField("String", "API_BASE_URL", "\"https://your-ngrok-url.ngrok.io/api/\"")
+      14         
+      15         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+      16         vectorDrawables {
+      17             useSupportLibrary = true
+      18         }
+      19     }
+      20 
+      21     buildTypes {
+      22         release {
+      23             isMinifyEnabled = false
+      24             proguardFiles(
+      25                 getDefaultProguardFile("proguard-android-optimize.txt"),
+      26                 "proguard-rules.pro"
+      27             )
+      28             buildConfigField("String", "API_BASE_URL", "\"https://your-production-api.com/api/\"")
+      29         }
+      30         debug {
+      31             buildConfigField("String", "API_BASE_URL", "\"https://your-ngrok-url.ngrok.io/api/\"")
+      32         }
+      33     }
+      34 }
+      35 
+      36 dependencies {
+      37     implementation("androidx.core:core-ktx:1.9.0")
+      38     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+      39     implementation("androidx.activity:activity-compose:1.7.2")
+      40     implementation("androidx.compose.ui:ui:1.5.1")
+      41     implementation("androidx.compose.material3:material3:1.1.1")
+      42     
+      43     // Hilt
+      44     implementation("com.google.dagger:hilt-android:2.47")
+      45     kapt("com.google.dagger:hilt-compiler:2.47")
+      46     
+      47     // Retrofit
+      48     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+      49     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+      50     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+      51     
+      52     // Navigation
+      53     implementation("androidx.navigation:navigation-compose:2.7.1")
+      54     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+      55     
+      56     // DataStore
+      57     implementation("androidx.datastore:datastore-preferences:1.0.0")
+      58 }
+     
+     В.3.3 OAuth налаштування для Android
+     Файл app/src/main/res/values/strings.xml:
+      1 <resources>
+      2     <string name="app_name">FocusLearn Mobile</string>
+      3     
+      4     <!-- OAuth Configuration -->
+      5     <string name="google_client_id">your-google-client-id.apps.googleusercontent.com</string>
+      6     <string name="facebook_app_id">your-facebook-app-id</string>
+      7     <string name="fb_login_protocol_scheme">fbyour-facebook-app-id</string>
+      8     
+      9     <!-- API Configuration -->
+      10     <string name="api_base_url">https://your-ngrok-url.ngrok.io/api/</string>
+      11 </resources>
+     
+     В.3.4 Network Security Config для HTTPS
+     Файл app/src/main/res/xml/network_security_config.xml:
+      1 <?xml version="1.0" encoding="utf-8"?>
+      2 <network-security-config>
+      3     <domain-config cleartextTrafficPermitted="true">
+      4         <domain includeSubdomains="true">localhost</domain>
+      5         <domain includeSubdomains="true">10.0.2.2</domain>
+      6         <domain includeSubdomains="true">your-ngrok-url.ngrok.io</domain>
+      7     </domain-config>
+      8     
+      9     <base-config cleartextTrafficPermitted="false">
+      10         <trust-anchors>
+      11             <certificates src="system"/>
+      12         </trust-anchors>
+      13     </base-config>
+      14 </network-security-config>
+     
+     Додайте до AndroidManifest.xml:
+      1 <application
+      2     android:name=".FocusLearnApplication"
+      3     android:networkSecurityConfig="@xml/network_security_config"
+      4     android:usesCleartextTraffic="true">
+      5     
+      6     <!-- OAuth Activities -->
+      7     <activity
+      8         android:name=".auth.WebViewAuthActivity"
+      9         android:exported="true"
+      10         android:launchMode="singleTop">
+      11         <intent-filter>
+      12             <action android:name="android.intent.action.VIEW" />
+      13             <category android:name="android.intent.category.DEFAULT" />
+      14             <category android:name="android.intent.category.BROWSABLE" />
+      15             <data android:scheme="com.example.focuslearnmobile" />
+      16         </intent-filter>
+      17     </activity>
+      18 </application>
+     
+     В.3.5 Команди збірки мобільного застосунку
+     Синхронізація Gradle:
+      1 ./gradlew sync
+     Збірка debug версії:
+      1 ./gradlew assembleDebug
+     Встановлення на пристрій:
+      1 ./gradlew installDebug
+     Запуск тестів:
+      1 ./gradlew test
+     
+     В.4 Налаштування OAuth провайдерів
+     В.4.1 Google OAuth Configuration
+     Google Cloud Console (https://console.cloud.google.com/):
+     1. Створіть новий проект або виберіть існуючий
+     2. Увімкніть Google+ API
+     3. Перейдіть до Credentials > Create Credentials > OAuth 2.0 Client IDs
+     4. Додайте авторизовані JavaScript origins:
+        - http://localhost:3000
+        - https://your-production-domain.com
+        - https://abc123.ngrok.io
+     5. Додайте авторизовані redirect URIs:
+        - http://localhost:3000/auth-callback.html
+        - https://localhost:7124/signin-google
+        - https://abc123.ngrok.io/signin-google
+     
+     В.4.2 Facebook OAuth Configuration
+     Facebook Developers (https://developers.facebook.com/):
+     1. Створіть новий додаток
+     2. Додайте Facebook Login продукт
+     3. Налаштуйте Valid OAuth Redirect URIs:
+        - http://localhost:3000/auth-callback.html
+        - https://localhost:7124/signin-facebook
+        - https://abc123.ngrok.io/signin-facebook
+     4. Додайте домени до App Domains:
+        - localhost
+        - abc123.ngrok.io
+     
+     В.5 Команди перевірки розгортання
+     В.5.1 Перевірка серверної частини
+     Тест API endpoints:
+     Перевірка методик концентрації
+      1 curl -k https://localhost:7124/api/ConcentrationMethods
+     Перевірка Swagger документації
+      1 curl -k https://localhost:7124/swagger/index.html
+     Перевірка health check
+      1 curl -k https://localhost:7124/api/health
+     
+     В.5.2 Перевірка веб-клієнта
+     Тест локального сервера:
+     Перевірка доступності
+      1 curl http://localhost:3000
+     Перевірка build файлів
+      1 npm run build
+      2 ls -la build/
+     
+     В.5.3 Перевірка мобільного застосунку
+     ADB команди:
+     Перевірка підключених пристроїв
+      1 adb devices
+     Встановлення APK
+      1 adb install app/build/outputs/apk/debug/app-debug.apk
+     Перегляд логів
+      1 adb logcat | grep FocusLearn
+     Очищення даних застосунку
+      1 adb shell pm clear com.example.focuslearnmobile
+2
+
+
